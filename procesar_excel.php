@@ -15,7 +15,7 @@ if (isset($_FILES['archivo_excel'])) {
         $nombreEntidad = trim($worksheet->getCell('C' . $row->getRowIndex())->getValue());
         $idPaciente = trim($worksheet->getCell('E' . $row->getRowIndex())->getValue());
         $nombrePaciente = trim($worksheet->getCell('F' . $row->getRowIndex())->getValue());
-        $sexo = strtoupper(trim($worksheet->getCell('G' . $row->getRowIndex())->getValue()));
+        $sexo = strtoupper(trim($worksheet->getCell('H' . $row->getRowIndex())->getValue()));
         $codigoProcedimiento = trim($worksheet->getCell('K' . $row->getRowIndex())->getValue());
         $cantidad = (int) $worksheet->getCell('L' . $row->getRowIndex())->getValue();
         $valorUnitario = floatval(str_replace(['$', ','], '', $worksheet->getCell('M' . $row->getRowIndex())->getValue()));
@@ -47,13 +47,13 @@ if (isset($_FILES['archivo_excel'])) {
                 // Insertar en la tabla Factura
                 $stmt = $conn->prepare(
                     "INSERT INTO Factura 
-                    (nombre_archivo, codigo_factura, codigo_procedimiento, id_entidad, nombre_paciente, id_paciente, sexo, fecha_nacimiento, cantidad, valor_unitario, valor_descuento, descuento, fecha_procedimiento) 
+                    (nombre_archivo, codigo_factura, sexo, nombre_paciente,  codigo_procedimiento, id_entidad, id_paciente,  fecha_nacimiento, cantidad, valor_unitario, valor_descuento, descuento, fecha_procedimiento) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
                 );
                 $stmt->bind_param(
                     "sssiisssiddds",
-                    $nombreArchivo, $codigoFactura, $codigoProcedimiento, $idEntidad, $nombrePaciente, $idPaciente,
-                    $sexo, $fechaNacimiento, $cantidad, $valorUnitario, $valorDescuento, $descuento, $fechaProcedimiento
+                    $nombreArchivo, $codigoFactura, $sexo, $nombrePaciente,  $codigoProcedimiento, $idEntidad, $idPaciente,
+                    $fechaNacimiento, $cantidad, $valorUnitario, $valorDescuento, $descuento, $fechaProcedimiento
                 );
                 $stmt->execute();
             } else {
