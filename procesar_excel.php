@@ -30,40 +30,57 @@ if (isset($_FILES['archivo_excel'])) {
         $result = $stmt->get_result();
         $rowEntidad = $result->fetch_assoc();
 
-        if ($rowEntidad) {
-            $idEntidad = $rowEntidad['id_entidad'];
-
-            // Verificar si el codigo_procedimiento existe en Procedimientos
-            $stmt = $conn->prepare("SELECT codigo_procedimiento FROM Procedimientos WHERE codigo_procedimiento = ?");
-            $stmt->bind_param("s", $codigoProcedimiento);
+        if (!$rowEntidad) {
+            // Insertar la nueva entidad si no existe
+            $stmt = $conn->prepare("INSERT INTO Entidades (nombre_entidad) VALUES (?)");
+            $stmt->bind_param("s", $nombreEntidad);
             $stmt->execute();
-            $result = $stmt->get_result();
-            $rowProcedimiento = $result->fetch_assoc();
 
-            if ($rowProcedimiento) {
-                // Calcular el valor con descuento
-                $valorDescuento = $valorUnitario * (1 - $descuento);
-
-                // Insertar en la tabla Factura
-                $stmt = $conn->prepare(
-                    "INSERT INTO Factura 
-                    (nombre_archivo,  sexo, nombre_paciente, codigo_factura,  codigo_procedimiento, id_entidad, id_paciente,  fecha_nacimiento, cantidad, valor_unitario, valor_descuento, descuento, fecha_procedimiento) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                );
-                $stmt->bind_param(
-                    "sssiisssiddds",
-                    $nombreArchivo, $sexo, $nombrePaciente, $codigoFactura,   $codigoProcedimiento, $idEntidad, $idPaciente,
-                    $fechaNacimiento, $cantidad, $valorUnitario, $valorDescuento, $descuento, $fechaProcedimiento
-                );
-                $stmt->execute();
-            } else {
-                echo "Procedimiento no encontrado: $codigoProcedimiento <br>";
-            }
+            // Obtener el id_entidad recién insertado
+            $idEntidad = $conn->insert_id;
         } else {
-            echo "Entidad no encontrada: $nombreEntidad <br>";
+            $idEntidad = $rowEntidad['id_entidad'];
+        }
+
+        // Verificar si el codigo_procedimiento existe en Procedimientos
+        $stmt = $conn->prepare("SELECT codigo_procedimiento FROM Procedimientos WHERE codigo_procedimiento = ?");
+        $stmt->bind_param("s", $codigoProcedimiento);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rowProcedimiento = $result->fetch_assoc();
+
+        if ($rowProcedimiento) {
+            // Calcular el valor con descuento
+            $valorDescuento = $valorUnitario * (1 - $descuento);
+
+            // Insertar en la tabla Factura
+            $stmt = $conn->prepare(
+                "INSERT INTO Factura 
+                (nombre_archivo, sexo, nombre_paciente, codigo_factura, codigo_procedimiento, id_entidad, id_paciente, fecha_nacimiento, cantidad, valor_unitario, valor_descuento, descuento, fecha_procedimiento) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
+            $stmt->bind_param(
+                "sssiisssiddds",
+                $nombreArchivo,
+                $sexo,
+                $nombrePaciente,
+                $codigoFactura,
+                $codigoProcedimiento,
+                $idEntidad,
+                $idPaciente,
+                $fechaNacimiento,
+                $cantidad,
+                $valorUnitario,
+                $valorDescuento,
+                $descuento,
+                $fechaProcedimiento
+            );
+            $stmt->execute();
+        } else {
+            echo "Procedimiento no encontrado: $codigoProcedimiento <br>";
         }
     }
 
-    echo "Datos subidos exitosamente.";
+    header("Location: factura.php?success=true");
+    exit();
 }
-?>

@@ -241,7 +241,7 @@
                         <p><strong>Procedimiento:</strong> <span id="resumen-procedimiento">-</span></p>
                         <p><strong>Cantidad:</strong> <span id="resumen-cantidad">1</span></p>
                         <p><strong>Valor Unitario:</strong> <span id="resumen-valor-unitario">$0.00</span></p>
-                        <p><strong>Descuento (15%):</strong> <span id="resumen-descuento">$0.00</span></p>
+                        <p><strong>Descuento ():</strong> <span id="resumen-descuento">$0.00</span></p>
                         <p><strong>Total a Pagar:</strong> <span id="resumen-total">$0.00</span></p>
                     </div>
                 </div>
