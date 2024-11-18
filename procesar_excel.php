@@ -50,32 +50,34 @@ if (isset($_FILES['archivo_excel'])) {
         $rowProcedimiento = $result->fetch_assoc();
 
         if ($rowProcedimiento) {
-            // Calcular el valor con descuento
-            $valorDescuento = $valorUnitario * (1 - $descuento);
-
-            // Insertar en la tabla Factura
+            // Verificar si la factura ya existe
             $stmt = $conn->prepare(
-                "INSERT INTO Factura 
-                (nombre_archivo, sexo, nombre_paciente, codigo_factura, codigo_procedimiento, id_entidad, id_paciente, fecha_nacimiento, cantidad, valor_unitario, valor_descuento, descuento, fecha_procedimiento) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                "SELECT 1 FROM Factura 
+                WHERE codigo_factura = ? AND codigo_procedimiento = ? AND id_entidad = ? AND id_paciente = ? AND fecha_procedimiento = ? "
             );
-            $stmt->bind_param(
-                "sssiisssiddds",
-                $nombreArchivo,
-                $sexo,
-                $nombrePaciente,
-                $codigoFactura,
-                $codigoProcedimiento,
-                $idEntidad,
-                $idPaciente,
-                $fechaNacimiento,
-                $cantidad,
-                $valorUnitario,
-                $valorDescuento,
-                $descuento,
-                $fechaProcedimiento
-            );
+            $stmt->bind_param("ssiis", $codigoFactura, $codigoProcedimiento, $idEntidad, $idPaciente, $fechaProcedimiento);
             $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows === 0) {
+                // Calcular el valor con descuento
+                $valorDescuento = $valorUnitario * (1 - $descuento);
+
+                // Insertar en la tabla Factura
+                $stmt = $conn->prepare(
+                    "INSERT INTO Factura 
+                    (nombre_archivo, sexo, nombre_paciente, codigo_factura, codigo_procedimiento, id_entidad, id_paciente, fecha_nacimiento, cantidad, valor_unitario, valor_descuento, descuento, fecha_procedimiento) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                );
+                $stmt->bind_param(
+                    "sssiisssiddds",
+                    $nombreArchivo, $sexo, $nombrePaciente, $codigoFactura, $codigoProcedimiento, $idEntidad, $idPaciente,
+                    $fechaNacimiento, $cantidad, $valorUnitario, $valorDescuento, $descuento, $fechaProcedimiento
+                );
+                $stmt->execute();
+            } else {
+                echo "Factura duplicada omitida: $codigoFactura <br>";
+            }
         } else {
             echo "Procedimiento no encontrado: $codigoProcedimiento <br>";
         }
@@ -83,4 +85,6 @@ if (isset($_FILES['archivo_excel'])) {
 
     header("Location: factura.php?success=true");
     exit();
+
 }
+?>
