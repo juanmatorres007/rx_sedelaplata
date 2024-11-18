@@ -47,12 +47,12 @@ if (isset($_FILES['archivo_excel'])) {
                 // Insertar en la tabla Factura
                 $stmt = $conn->prepare(
                     "INSERT INTO Factura 
-                    (nombre_archivo, codigo_factura, sexo, nombre_paciente,  codigo_procedimiento, id_entidad, id_paciente,  fecha_nacimiento, cantidad, valor_unitario, valor_descuento, descuento, fecha_procedimiento) 
+                    (nombre_archivo,  sexo, nombre_paciente, codigo_factura,  codigo_procedimiento, id_entidad, id_paciente,  fecha_nacimiento, cantidad, valor_unitario, valor_descuento, descuento, fecha_procedimiento) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
                 );
                 $stmt->bind_param(
                     "sssiisssiddds",
-                    $nombreArchivo, $codigoFactura, $sexo, $nombrePaciente,  $codigoProcedimiento, $idEntidad, $idPaciente,
+                    $nombreArchivo, $sexo, $nombrePaciente, $codigoFactura,   $codigoProcedimiento, $idEntidad, $idPaciente,
                     $fechaNacimiento, $cantidad, $valorUnitario, $valorDescuento, $descuento, $fechaProcedimiento
                 );
                 $stmt->execute();
