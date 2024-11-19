@@ -16,12 +16,19 @@ if (isset($_FILES['archivo_excel'])) {
         $idPaciente = trim($worksheet->getCell('E' . $row->getRowIndex())->getValue());
         $nombrePaciente = trim($worksheet->getCell('F' . $row->getRowIndex())->getValue());
         $sexo = strtoupper(trim($worksheet->getCell('H' . $row->getRowIndex())->getValue()));
-        $codigoProcedimiento = trim($worksheet->getCell('K' . $row->getRowIndex())->getValue());
+
+        // Leer el código como texto y asegurarse de conservar caracteres especiales
+        $codigoProcedimiento = trim($worksheet->getCell('K' . $row->getRowIndex())->getFormattedValue());
+        $codigoProcedimiento = preg_replace('/[^A-Za-z0-9]/', '', $codigoProcedimiento); // Elimina caracteres no válidos
+
         $cantidad = (int) $worksheet->getCell('L' . $row->getRowIndex())->getValue();
         $valorUnitario = floatval(str_replace(['$', ','], '', $worksheet->getCell('M' . $row->getRowIndex())->getValue()));
         $descuento = floatval(str_replace(['$', ','], '', $worksheet->getCell('N' . $row->getRowIndex())->getValue()));
         $fechaProcedimiento = $worksheet->getCell('P' . $row->getRowIndex())->getFormattedValue();
         $fechaNacimiento = $worksheet->getCell('S' . $row->getRowIndex())->getFormattedValue();
+
+        // Depuración: Verifica si el código de procedimiento se lee correctamente
+        error_log("Código Procedimiento leído: " . $codigoProcedimiento);
 
         // Buscar el id_entidad usando nombre_entidad
         $stmt = $conn->prepare("SELECT id_entidad FROM Entidades WHERE nombre_entidad = ?");
@@ -35,8 +42,6 @@ if (isset($_FILES['archivo_excel'])) {
             $stmt = $conn->prepare("INSERT INTO Entidades (nombre_entidad) VALUES (?)");
             $stmt->bind_param("s", $nombreEntidad);
             $stmt->execute();
-
-            // Obtener el id_entidad recién insertado
             $idEntidad = $conn->insert_id;
         } else {
             $idEntidad = $rowEntidad['id_entidad'];
@@ -53,7 +58,7 @@ if (isset($_FILES['archivo_excel'])) {
             // Verificar si la factura ya existe
             $stmt = $conn->prepare(
                 "SELECT 1 FROM Factura 
-                WHERE codigo_factura = ? AND codigo_procedimiento = ? AND id_entidad = ? AND id_paciente = ? AND fecha_procedimiento = ? "
+                WHERE codigo_factura = ? AND codigo_procedimiento = ? AND id_entidad = ? AND id_paciente = ? AND fecha_procedimiento = ?"
             );
             $stmt->bind_param("ssiis", $codigoFactura, $codigoProcedimiento, $idEntidad, $idPaciente, $fechaProcedimiento);
             $stmt->execute();
@@ -85,6 +90,5 @@ if (isset($_FILES['archivo_excel'])) {
 
     header("Location: factura.php?success=true");
     exit();
-
 }
 ?>

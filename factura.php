@@ -75,22 +75,24 @@
             <option value="11">Noviembre</option>
             <option value="12">Diciembre</option>
         </select>
-        
+
         <select name="year" id="year" class="form-control" style="width: 5%"></select>
     </div>
 
-    
+
 
     <!-- Información de resumen -->
-<div class="summary-info mb-4">
-    <p><strong>Número de Procedimientos:</strong> <span id="totalProcedimientos">0</span></p>
-    <p><strong>Total Facturado:</strong> <span id="totalFacturado">0</span></p>
-</div>
+    <div class="summary-info mb-4">
+        <p><strong>Número de Procedimientos:</strong> <span id="totalProcedimientos">0</span></p>
+        <p><strong>Total Facturado Hospital:</strong> <span id="totalFacturado">0</span></p>
+        <p><strong>Total Facturado RX:</strong> <span id="totalRx">0</span></p>
 
-<form action="procesar_excel.php" method="post" enctype="multipart/form-data">
-    <input type="file" name="archivo_excel" accept=".xlsx">
-    <button type="submit" name="submit">Cargar y Registrar Facturas</button>
-</form>
+    </div>
+
+    <form action="procesar_excel.php" method="post" enctype="multipart/form-data">
+        <input type="file" name="archivo_excel" accept=".xlsx">
+        <button type="submit" name="submit">Cargar y Registrar Facturas</button>
+    </form>
 
 
     <!-- Contenedor para la tabla -->
@@ -126,71 +128,79 @@
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 
-<script>
-    $(document).ready(function() {
-        // Establecer el año actual por defecto en el selector de años
-        var currentYear = new Date().getFullYear();
-        
-        // Llenar el selector de años con un rango (ejemplo: últimos 10 años hasta el actual)
-        for (var year = currentYear; year >= currentYear - 5; year--) {
-            $('#year').append(new Option(year, year));
-        }
-        $('#year').val(currentYear); // Seleccionar el año actual por defecto
+    <script>
+        $(document).ready(function() {
+            // Establecer el año actual por defecto en el selector de años
+            var currentYear = new Date().getFullYear();
 
-        var currentMonth = new Date().toISOString().slice(5, 7);
-        $('#mes').val(currentMonth);
-
-        // Initialize DataTable
-        var table = $('#facturaTable').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json"
+            // Llenar el selector de años con un rango (ejemplo: últimos 10 años hasta el actual)
+            for (var year = currentYear; year >= currentYear - 5; year--) {
+                $('#year').append(new Option(year, year));
             }
-        });
+            $('#year').val(currentYear); // Seleccionar el año actual por defecto
 
-        function loadFacturaData(tipoProcedimiento, tipoEntidad, mes, year) {
-            $.ajax({
-                url: 'consultaFactura.php',
-                type: 'POST',
-                dataType: 'json', // Espera una respuesta en formato JSON
-                data: {
-                    tipo_procedimiento: tipoProcedimiento,
-                    tipo_entidad: tipoEntidad,
-                    mes: mes,
-                    year: year // Enviar el filtro de año al servidor
-                },
-                success: function(response) {
-                    // Limpiar la tabla antes de agregar las nuevas filas
-                    table.clear().draw();
+            var currentMonth = new Date().toISOString().slice(5, 7);
+            $('#mes').val(currentMonth);
 
-                    // Agregar las filas de la tabla al DataTable
-                    table.rows.add($(response.tableRows)).draw();
-
-                    // Actualizar los valores de resumen en la interfaz
-                    $('#totalProcedimientos').text(response.totalProcedimientos);
-                    $('#totalFacturado').text(response.totalFacturado.toLocaleString('es-ES', { minimumFractionDigits: 3, maximumFractionDigits: 3 }));
+            // Initialize DataTable
+            var table = $('#facturaTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json"
                 }
             });
-        }
 
-        // Cargar datos iniciales para el mes y año actuales
-        loadFacturaData('todos', 'todos', currentMonth, currentYear);
+            function loadFacturaData(tipoProcedimiento, tipoEntidad, mes, year) {
+                $.ajax({
+                    url: 'consultaFactura.php',
+                    type: 'POST',
+                    dataType: 'json', // Espera una respuesta en formato JSON
+                    data: {
+                        tipo_procedimiento: tipoProcedimiento,
+                        tipo_entidad: tipoEntidad,
+                        mes: mes,
+                        year: year // Enviar el filtro de año al servidor
+                    },
+                    success: function(response) {
+                        // Limpiar la tabla antes de agregar las nuevas filas
+                        table.clear().draw();
 
-        // Actualizar tabla y resumen cuando cambian los filtros
-        $('#tipo_procedimiento, #tipo_entidad, #mes, #year').on('change', function() {
-            var tipoProcedimiento = $('#tipo_procedimiento').val();
-            var tipoEntidad = $('#tipo_entidad').val();
-            var mes = $('#mes').val();
-            var year = $('#year').val();
-            loadFacturaData(tipoProcedimiento, tipoEntidad, mes, year);
+                        // Agregar las filas de la tabla al DataTable
+                        table.rows.add($(response.tableRows)).draw();
+
+                        // Actualizar los valores de resumen en la interfaz
+                        $('#totalProcedimientos').text(response.totalProcedimientos);
+                        $('#totalFacturado').text(response.totalFacturado.toLocaleString('es-ES', {
+                            minimumFractionDigits: 3,
+                            maximumFractionDigits: 3
+                        }));
+                        $('#totalRx').text(response.totalRx.toLocaleString('es-ES', {
+                            minimumFractionDigits: 3,
+                            maximumFractionDigits: 3
+                        }));
+                    }
+
+                });
+            }
+
+            // Cargar datos iniciales para el mes y año actuales
+            loadFacturaData('todos', 'todos', currentMonth, currentYear);
+
+            // Actualizar tabla y resumen cuando cambian los filtros
+            $('#tipo_procedimiento, #tipo_entidad, #mes, #year').on('change', function() {
+                var tipoProcedimiento = $('#tipo_procedimiento').val();
+                var tipoEntidad = $('#tipo_entidad').val();
+                var mes = $('#mes').val();
+                var year = $('#year').val();
+                loadFacturaData(tipoProcedimiento, tipoEntidad, mes, year);
+            });
         });
-    });
-</script>
+    </script>
 
-</script>
+    </script>
 
 </body>
 

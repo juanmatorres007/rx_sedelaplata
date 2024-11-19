@@ -58,6 +58,7 @@ if (isset($_POST['tipo_procedimiento']) && isset($_POST['mes']) && isset($_POST[
     $result = $stmt->get_result();
 
     // Variables para acumular totales
+    $totalRx = 0;
     $totalProcedimientos = 0;
     $totalFacturado = 0;
     $tableRows = "";
@@ -72,15 +73,15 @@ if (isset($_POST['tipo_procedimiento']) && isset($_POST['mes']) && isset($_POST[
                 // Si `descuento` es un valor absoluto
                 $valor_unitario_con_descuento = $row['valor_unitario'] - $row['descuento'];
 
-                // Si `descuento` representa un porcentaje, usa esta línea en su lugar:
-                // $valor_unitario_con_descuento = $row['valor_unitario'] * (1 - $row['descuento'] / 100);
             }
 
             // Calcular el total para el registro actual y sumar a los totales
+            $totalRx += $row['valor_descuento'];
             $totalProcedimientos += $row['cantidad'];
-            $totalFacturado += $valor_unitario_con_descuento * $row['cantidad'];
+            $totalFacturado  += $row['valor_unitario'] ;
 
-            // Construir las filas de la tabla
+
+
             $tableRows .= "<tr>
                 <td>{$row['codigo_factura']}</td>
                 <td>{$row['nombre_archivo']}</td>
@@ -93,9 +94,9 @@ if (isset($_POST['tipo_procedimiento']) && isset($_POST['mes']) && isset($_POST[
                 <td>{$row['id_paciente']}</td>
                 <td>{$row['sexo']}</td>
                 <td>{$row['cantidad']}</td>
-                <td>{$row['valor_unitario']}</td>
+                <td>$" . number_format($row['valor_unitario'],0, '.', '.'). "</td>
                 <td>{$row['descuento']}</td>
-                <td>" . number_format($valor_unitario_con_descuento, 3, ',', '.') . "</td>
+                <td>$" . number_format($row['valor_descuento'],0, '.', '.'). "</td>
                 <td>{$row['fecha_procedimiento']}</td>
             </tr>";
         }
@@ -106,12 +107,14 @@ if (isset($_POST['tipo_procedimiento']) && isset($_POST['mes']) && isset($_POST[
     $stmt->close();
     $conn->close();
 
-    // Responder con JSON que incluye las filas de la tabla, el total de procedimientos y el total facturado
+
     echo json_encode([
         "tableRows" => $tableRows,
         "totalProcedimientos" => $totalProcedimientos,
-        "totalFacturado" => number_format($totalFacturado, 3, '.', '.')
+        "totalFacturado" => number_format($totalFacturado, 0, '.', '.'),
+        "totalRx" => number_format($totalRx, 0, '.', '.')
     ]);
+    
 }
 ?>
 
