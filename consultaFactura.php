@@ -4,7 +4,7 @@ include "conexion.php";
 if (isset($_POST['tipo_procedimiento']) && isset($_POST['mes_inicio']) && isset($_POST['tipo_entidad'])) {
     $tipo_procedimiento = $_POST['tipo_procedimiento'];
     $mes_inicio = $_POST['mes_inicio'];
-    $mes_fin = $_POST['mes_fin'] ?? null; // Puede ser null si no está seleccionado
+    $mes_fin = $_POST['mes_fin'] ?? null; 
     $tipo_entidad = $_POST['tipo_entidad'];
     $year = $_POST['year'] ?? 'todos';
 
@@ -31,9 +31,9 @@ if (isset($_POST['tipo_procedimiento']) && isset($_POST['mes_inicio']) && isset(
         $params[] = $year;
     }
 
-    // Lógica para manejar el mes_inicio y mes_fin
+
     if (!empty($mes_fin)) {
-        // Rango entre mes_inicio y mes_fin
+
         $sql .= " AND MONTH(f.fecha_procedimiento) BETWEEN ? AND ?";
         $paramTypes .= "ii";
         $params[] = $mes_inicio;

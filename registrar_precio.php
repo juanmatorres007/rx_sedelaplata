@@ -83,14 +83,12 @@
         <select id="eps" name="eps" required>
             <option value="">Seleccione una EPS</option>
             <?php
-            // Conectar a la base de datos para obtener la lista de EPSs
+           
             include "conexion.php";
 
-            // Consulta para obtener las EPS
             $sql = "SELECT id_entidad, nombre_entidad FROM Entidades WHERE tipo_entidad = 'EPS'";
             $result = $conn->query($sql);
 
-            // Mostrar las EPS en el formulario
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "<option value='" . $row['id_entidad'] . "'>" . $row['nombre_entidad'] . "</option>";

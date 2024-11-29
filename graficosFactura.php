@@ -54,7 +54,7 @@ $jsonData = json_encode($data);
         }
 
         .form-group {
-            margin-left: 500px;
+            margin-left: 200px;
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
@@ -75,6 +75,8 @@ $jsonData = json_encode($data);
             </svg>
         </a>
     </button>
+
+    <!--Grafico 1 prodecimientos realida-->
 
     <div class="form-group">
         <select name="mes" id="mes" class="form-control">
@@ -108,56 +110,124 @@ $jsonData = json_encode($data);
         </select>
 
         <select name="year" id="year" class="form-control" style="width: 5%"></select>
-    </div><br><br>
-    </div>
-    <div class="chart-container" style="width: 80%; margin: 0 auto; padding: 20px;">
+        <select id="chartType" class="form-control" style="width: 15%;">
+            <option value="bar">Barra</option>
+            <option value="line">Lineal</option>
+            <option value="doughnut">Circular</option>
+        </select>
+    </div><br>
+    <div class="chart-container" style="width: 70%;margin: 0 auto; padding: 20px;">
         <canvas id="proceduresChart"></canvas>
     </div>
-
     <script>
-        
         document.addEventListener("DOMContentLoaded", function() {
-            const data = <?php echo $jsonData; ?>;
-
-            const labels = data.map(item => item.nombre_procedimiento);
-            const values = data.map(item => item.total);
-
             const ctx = document.getElementById('proceduresChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Procedimientos Realizados',
-                        data: values,
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        },
-                        title: {
-                            display: true,
-                            text: 'Procedimientos Realizados en el Mes'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-            
-        });
+            let chart;
 
-        
+            const createChart = (type, labels, values) => {
+                if (chart) {
+                    chart.destroy();
+                }
+
+                const colors = type === "doughnut" ?
+                    createUniqueColors(labels.length) 
+                    :
+                    "rgba(54, 162, 235, 0.6)"; 
+
+                chart = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Procedimientos Realizados',
+                            data: values,
+                            backgroundColor: colors,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
+                            },
+                            title: {
+                                display: true,
+                                text: 'Procedimientos Realizados'
+                            }
+                        },
+                    }
+                });
+            };
+
+  
+            const createUniqueColors = (count) => {
+                const colors = new Set(); 
+
+                while (colors.size < count) {
+                    const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+                    colors.add(color);
+                }
+
+                return Array.from(colors); 
+            };
+
+            const fetchData = () => {
+                const mes = document.getElementById('mes').value;
+                const mes_fin = document.getElementById('mes_fin').value || mes; 
+                const year = document.getElementById('year').value;
+                const chartType = document.getElementById('chartType').value;
+
+                fetch(`getProceduresData.php?mes=${mes}&mes_fin=${mes_fin}&year=${year}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        const labels = data.map(item => item.nombre_procedimiento);
+                        const values = data.map(item => item.total);
+                        createChart(chartType, labels, values);
+                    })
+                    .catch(error => console.error('Error:', error));
+            };
+
+            const generateYears = () => {
+                const yearSelect = document.getElementById('year');
+                const currentYear = new Date().getFullYear();
+
+                for (let year = currentYear; year >= 2020; year--) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    yearSelect.appendChild(option);
+                }
+                // Seleccionar el año actual
+                yearSelect.value = currentYear;
+            };
+
+
+            const initializeFilters = () => {
+                const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+                document.getElementById('mes').value = currentMonth;
+                document.getElementById('mes_fin').value = "";
+            };
+
+
+            document.getElementById('chartType').addEventListener('change', fetchData);
+            document.getElementById('mes').addEventListener('change', fetchData);
+            document.getElementById('mes_fin').addEventListener('change', fetchData);
+            document.getElementById('year').addEventListener('change', fetchData);
+
+
+            generateYears();
+            initializeFilters();
+            fetchData();
+        });
     </script>
+
 </body>
 
 </html>
