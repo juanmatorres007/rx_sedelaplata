@@ -130,9 +130,8 @@ $jsonData = json_encode($data);
                 }
 
                 const colors = type === "doughnut" ?
-                    createUniqueColors(labels.length) 
-                    :
-                    "rgba(54, 162, 235, 0.6)"; 
+                    createUniqueColors(labels.length) :
+                    "rgba(54, 162, 235, 0.6)";
 
                 chart = new Chart(ctx, {
                     type: type,
@@ -162,21 +161,21 @@ $jsonData = json_encode($data);
                 });
             };
 
-  
+
             const createUniqueColors = (count) => {
-                const colors = new Set(); 
+                const colors = new Set();
 
                 while (colors.size < count) {
                     const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
                     colors.add(color);
                 }
 
-                return Array.from(colors); 
+                return Array.from(colors);
             };
 
             const fetchData = () => {
                 const mes = document.getElementById('mes').value;
-                const mes_fin = document.getElementById('mes_fin').value || mes; 
+                const mes_fin = document.getElementById('mes_fin').value || mes;
                 const year = document.getElementById('year').value;
                 const chartType = document.getElementById('chartType').value;
 
@@ -226,8 +225,8 @@ $jsonData = json_encode($data);
             initializeFilters();
             fetchData();
         });
-    </script>
-
+    </script><br><br>
+    <?php include "graficoEntidades.php"; ?>
 </body>
 
 </html>
