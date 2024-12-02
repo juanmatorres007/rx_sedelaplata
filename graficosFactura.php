@@ -1,7 +1,9 @@
 <?php
+// Conexión a la base de datos
 include 'conexion.php';
 
-$query = "
+// Consulta 1: Procedimientos realizados
+$queryProcedures = "
     SELECT p.nombre_procedimiento, COUNT(f.id_factura) AS total 
     FROM Factura f
     INNER JOIN Procedimientos p ON f.id_procedimiento = p.id_procedimiento
@@ -9,17 +11,29 @@ $query = "
     AND YEAR(f.fecha_procedimiento) = YEAR(CURRENT_DATE())
     GROUP BY p.nombre_procedimiento
 ";
-$result = $conn->query($query);
-
-$data = [];
-while ($row = $result->fetch_assoc()) {
-    $data[] = $row;
+$resultProcedures = $conn->query($queryProcedures);
+$dataProcedures = [];
+while ($row = $resultProcedures->fetch_assoc()) {
+    $dataProcedures[] = $row;
 }
+$jsonDataProcedures = json_encode($dataProcedures);
 
-
-$jsonData = json_encode($data);
+// Consulta 2: Facturación por tipo de entidad
+$queryEntities = "
+    SELECT e.tipo_entidad, SUM(f.valor_unitario) AS total_facturado
+    FROM Factura f
+    INNER JOIN Entidades e ON f.id_entidad = e.id_entidad
+    WHERE MONTH(f.fecha_procedimiento) = MONTH(CURRENT_DATE())
+    AND YEAR(f.fecha_procedimiento) = YEAR(CURRENT_DATE())
+    GROUP BY e.tipo_entidad
+";
+$resultEntities = $conn->query($queryEntities);
+$dataEntities = [];
+while ($row = $resultEntities->fetch_assoc()) {
+    $dataEntities[] = $row;
+}
+$jsonDataEntities = json_encode($dataEntities);
 ?>
-
 <!DOCTYPE html>
 <html>
 
@@ -79,7 +93,7 @@ $jsonData = json_encode($data);
     <!--Grafico 1 prodecimientos realida-->
 
     <div class="form-group">
-        <select name="mes" id="mes" class="form-control">
+        <select name="mes" id="mes" class="form-control" style="width: 10%">
             <option value="01">Enero</option>
             <option value="02">Febrero</option>
             <option value="03">Marzo</option>
@@ -116,117 +130,149 @@ $jsonData = json_encode($data);
             <option value="doughnut">Circular</option>
         </select>
     </div><br>
-    <div class="chart-container" style="width: 70%;margin: 0 auto; padding: 20px;">
-        <canvas id="proceduresChart"></canvas>
+
+    <div class="Gráficos">
+        <!-- Gráfico 1: Procedimientos realizados -->
+        <div class="chart-container" style="width: 70%; margin-bottom: 50px; margin-left: 15%;">
+            <canvas id="proceduresChart"></canvas>
+        </div>
+
+        <!-- Gráfico 2: Facturación por tipo de entidad -->
+        <div class="chart-container" style="width: 45%; margin-left: 25%;">
+            <canvas id="entityTypeChart"></canvas>
+        </div>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const ctx = document.getElementById('proceduresChart').getContext('2d');
-            let chart;
+        document.addEventListener("DOMContentLoaded", function () {
+    const ctxProcedures = document.getElementById('proceduresChart').getContext('2d');
+    const ctxEntities = document.getElementById('entityTypeChart').getContext('2d');
+    let proceduresChart, entitiesChart;
+    
 
-            const createChart = (type, labels, values) => {
-                if (chart) {
-                    chart.destroy();
+    // Función para crear gráficos
+    const createChart = (ctx, type, labels, values, title, colors = []) => {
+        if (ctx.chart) {
+            ctx.chart.destroy();
+        }
+        ctx.chart = new Chart(ctx, {
+            type: type,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: title,
+                    data: values,
+                    backgroundColor: colors.length ? colors : 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                  indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                    legend: { display: true },
+                    title: { display: true, text: title }
                 }
-
-                const colors = type === "doughnut" ?
-                    createUniqueColors(labels.length) :
-                    "rgba(54, 162, 235, 0.6)";
-
-                chart = new Chart(ctx, {
-                    type: type,
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Procedimientos Realizados',
-                            data: values,
-                            backgroundColor: colors,
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: true
-                            },
-                            title: {
-                                display: true,
-                                text: 'Procedimientos Realizados'
-                            }
-                        },
-                    }
-                });
-            };
-
-
-            const createUniqueColors = (count) => {
-                const colors = new Set();
-
-                while (colors.size < count) {
-                    const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
-                    colors.add(color);
-                }
-
-                return Array.from(colors);
-            };
-
-            const fetchData = () => {
-                const mes = document.getElementById('mes').value;
-                const mes_fin = document.getElementById('mes_fin').value || mes;
-                const year = document.getElementById('year').value;
-                const chartType = document.getElementById('chartType').value;
-
-                fetch(`getProceduresData.php?mes=${mes}&mes_fin=${mes_fin}&year=${year}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert(data.error);
-                            return;
-                        }
-                        const labels = data.map(item => item.nombre_procedimiento);
-                        const values = data.map(item => item.total);
-                        createChart(chartType, labels, values);
-                    })
-                    .catch(error => console.error('Error:', error));
-            };
-
-            const generateYears = () => {
-                const yearSelect = document.getElementById('year');
-                const currentYear = new Date().getFullYear();
-
-                for (let year = currentYear; year >= 2020; year--) {
-                    const option = document.createElement('option');
-                    option.value = year;
-                    option.textContent = year;
-                    yearSelect.appendChild(option);
-                }
-                // Seleccionar el año actual
-                yearSelect.value = currentYear;
-            };
-
-
-            const initializeFilters = () => {
-                const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
-                document.getElementById('mes').value = currentMonth;
-                document.getElementById('mes_fin').value = "";
-            };
-
-
-            document.getElementById('chartType').addEventListener('change', fetchData);
-            document.getElementById('mes').addEventListener('change', fetchData);
-            document.getElementById('mes_fin').addEventListener('change', fetchData);
-            document.getElementById('year').addEventListener('change', fetchData);
-
-
-            generateYears();
-            initializeFilters();
-            fetchData();
+            }
         });
-    </script><br><br>
-    <?php include "graficoEntidades.php"; ?>
+    };
+
+    // Genera colores únicos
+    const createUniqueColors = (count) => {
+        const colors = new Set();
+        while (colors.size < count) {
+            const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+            colors.add(color);
+        }
+        return Array.from(colors);
+    };
+
+    // Función para actualizar el gráfico de procedimientos
+    const updateProceduresChart = () => {
+        const filters = getFilters();
+        const chartType = document.getElementById('chartType').value;
+        fetch(`getProceduresData.php?mes=${filters.mes}&mes_fin=${filters.mes_fin}&year=${filters.year}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                const labels = data.map(item => item.nombre_procedimiento);
+                const values = data.map(item => item.total);
+                createChart(ctxProcedures, chartType, labels, values, 'Procedimientos Realizados');
+            })
+            .catch(error => console.error('Error:', error));
+    };
+
+    // Función para actualizar el gráfico de entidades
+    const updateEntitiesChart = () => {
+        const filters = getFilters();
+        fetch(`getEntitiesData.php?mes=${filters.mes}&mes_fin=${filters.mes_fin}&year=${filters.year}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                const labels = data.map(item => item.tipo_entidad);
+                const values = data.map(item => item.total_facturado);
+                const colors = createUniqueColors(labels.length);
+                createChart(ctxEntities, 'pie', labels, values, 'Facturación por Tipo de Entidad', colors);
+            })
+            .catch(error => console.error('Error:', error));
+    };
+
+    // Obtiene los valores de los filtros
+    const getFilters = () => ({
+        mes: document.getElementById('mes').value,
+        mes_fin: document.getElementById('mes_fin').value || document.getElementById('mes').value,
+        year: document.getElementById('year').value
+    });
+
+    // Generar opciones de años dinámicamente
+    const generateYears = () => {
+        const yearSelect = document.getElementById('year');
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 2020; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
+        yearSelect.value = currentYear;
+    };
+
+    // Inicializa los filtros
+    const initializeFilters = () => {
+        const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+        document.getElementById('mes').value = currentMonth;
+        document.getElementById('mes_fin').value = '';
+    };
+
+    // Añade eventos a los filtros
+    const addFilterEvents = () => {
+        // Actualizar ambos gráficos cuando cambien los filtros de mes, mes fin, o año
+        ['mes', 'mes_fin', 'year'].forEach(filterId => {
+            document.getElementById(filterId).addEventListener('change', () => {
+                updateProceduresChart();
+                updateEntitiesChart();
+            });
+        });
+
+        // Actualizar solo el gráfico de procedimientos al cambiar el tipo de gráfico
+        document.getElementById('chartType').addEventListener('change', updateProceduresChart);
+    };
+
+    // Inicializar todo
+    generateYears();
+    initializeFilters();
+    addFilterEvents();
+    updateProceduresChart();
+    updateEntitiesChart();
+});
+
+    </script>
 </body>
 
 </html>
