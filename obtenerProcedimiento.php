@@ -56,7 +56,6 @@
             <label for="eps">Selecciona la Entidad:</label>
             <select name="eps" id="eps" class="form-control" required>
                 <option value="">Seleccionar Entidad</option>
-                <!-- This will be dynamically populated based on the selected entity type -->
             </select>
         </div>
 

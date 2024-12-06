@@ -20,7 +20,7 @@ $jsonDataProcedures = json_encode($dataProcedures);
 
 // Consulta 2: Facturación por tipo de entidad
 $queryEntities = "
-    SELECT e.tipo_entidad, SUM(f.valor_unitario) AS total_facturado
+    SELECT e.tipo_entidad, SUM(f.valor_unitario) AS total_facturado, SUM(f.cantidad) AS total_cant
     FROM Factura f
     INNER JOIN Entidades e ON f.id_entidad = e.id_entidad
     WHERE MONTH(f.fecha_procedimiento) = MONTH(CURRENT_DATE())

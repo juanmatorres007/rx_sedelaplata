@@ -8,7 +8,7 @@ if (isset($_POST['eps']) && isset($_POST['tipo_procedimiento'])) {
     // Construir consulta base
     $sql = "SELECT p.codigo_procedimiento, p.nombre_procedimiento, p.marca, pr.precio_hospitalario, pr.precio_ambulatorio
             FROM Procedimientos p
-            JOIN Precios pr ON p.codigo_procedimiento = pr.codigo_procedimiento
+            JOIN Precios pr ON p.id_procedimiento = pr.id_procedimiento
             WHERE pr.id_entidad = ?";
 
     // Ajustar consulta según el tipo de procedimiento seleccionado
