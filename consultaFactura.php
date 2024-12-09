@@ -1,3 +1,4 @@
+
 <?php
 include "conexion.php";
 
@@ -73,7 +74,6 @@ if (isset($_POST['tipo_procedimiento']) && isset($_POST['mes_inicio']) && isset(
             $totalRx += $row['valor_descuento'];
             $totalProcedimientos += $row['cantidad'];
             $totalFacturado += $row['valor_unitario'];
-
             $tableRows .= "<tr>
             <td>{$row['codigo_factura']}</td>
             <td>{$row['nombre_archivo']}</td>
@@ -91,17 +91,16 @@ if (isset($_POST['tipo_procedimiento']) && isset($_POST['mes_inicio']) && isset(
             <td>$" . number_format($row['valor_descuento'], 0, '.', '.') . "</td>
             <td>{$row['fecha_procedimiento']}</td>
             <td>
-              <button 
-                style='background: none; border: none; cursor: pointer;' 
-                class='delete-button' 
-                data-id='{$row['codigo_factura']}'
-                aria-label='Eliminar'>
-                <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-trash-fill' viewBox='0 0 16 16'>
-                  <path d='M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0'/>
-                </svg>
-              </button>
+                <form method='POST' action='eliminar_factura.php' style='display:inline;'>
+                    <input type='hidden' name='codigo_factura' value='{$row['codigo_factura']}'>
+                    <button type='submit' style='background: none; border: none; cursor: pointer;' aria-label='Eliminar'>
+                        <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-trash-fill' viewBox='0 0 16 16'>
+                            <path d='M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0'/>
+                        </svg>
+                    </button>
+                </form>
             </td>
-          </tr>";
+        </tr>";
         }
     } else {
         $tableRows = "<tr><td colspan='15'>No se encontraron registros para los filtros seleccionados.</td></tr>";
@@ -117,3 +116,4 @@ if (isset($_POST['tipo_procedimiento']) && isset($_POST['mes_inicio']) && isset(
         "totalRx" => number_format($totalRx, 0, '.', '.'),
     ]);
 }
+?>
