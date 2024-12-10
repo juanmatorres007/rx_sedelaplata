@@ -129,6 +129,7 @@ $jsonDataEntities = json_encode($dataEntities);
             <option value="line">Lineal</option>
             <option value="doughnut">Circular</option>
         </select>
+        
     </div><br>
 
     <div class="Gráficos">
@@ -187,7 +188,7 @@ $jsonDataEntities = json_encode($dataEntities);
         return Array.from(colors);
     };
 
-    // Función para actualizar el gráfico de procedimientos
+    //  actualizar el gráfico de 
     const updateProceduresChart = () => {
         const filters = getFilters();
         const chartType = document.getElementById('chartType').value;
@@ -205,7 +206,7 @@ $jsonDataEntities = json_encode($dataEntities);
             .catch(error => console.error('Error:', error));
     };
 
-    // Función para actualizar el gráfico de entidades
+    // actualizar el gráfico de entidades
     const updateEntitiesChart = () => {
         const filters = getFilters();
         fetch(`getEntitiesData.php?mes=${filters.mes}&mes_fin=${filters.mes_fin}&year=${filters.year}`)
@@ -223,14 +224,13 @@ $jsonDataEntities = json_encode($dataEntities);
             .catch(error => console.error('Error:', error));
     };
 
-    // Obtiene los valores de los filtros
+    //valores de los filtros
     const getFilters = () => ({
         mes: document.getElementById('mes').value,
         mes_fin: document.getElementById('mes_fin').value || document.getElementById('mes').value,
         year: document.getElementById('year').value
     });
 
-    // Generar opciones de años dinámicamente
     const generateYears = () => {
         const yearSelect = document.getElementById('year');
         const currentYear = new Date().getFullYear();
@@ -243,16 +243,14 @@ $jsonDataEntities = json_encode($dataEntities);
         yearSelect.value = currentYear;
     };
 
-    // Inicializa los filtros
     const initializeFilters = () => {
         const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
         document.getElementById('mes').value = currentMonth;
         document.getElementById('mes_fin').value = '';
     };
 
-    // Añade eventos a los filtros
     const addFilterEvents = () => {
-        // Actualizar ambos gráficos cuando cambien los filtros de mes, mes fin, o año
+  
         ['mes', 'mes_fin', 'year'].forEach(filterId => {
             document.getElementById(filterId).addEventListener('change', () => {
                 updateProceduresChart();
@@ -260,11 +258,9 @@ $jsonDataEntities = json_encode($dataEntities);
             });
         });
 
-        // Actualizar solo el gráfico de procedimientos al cambiar el tipo de gráfico
         document.getElementById('chartType').addEventListener('change', updateProceduresChart);
     };
 
-    // Inicializar todo
     generateYears();
     initializeFilters();
     addFilterEvents();

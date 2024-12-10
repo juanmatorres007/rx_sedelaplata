@@ -5,13 +5,13 @@ if (isset($_POST['eps']) && isset($_POST['tipo_procedimiento'])) {
     $id_eps = intval($_POST['eps']);
     $tipo_procedimiento = $_POST['tipo_procedimiento'];
 
-    // Construir consulta base
+
     $sql = "SELECT p.codigo_procedimiento, p.nombre_procedimiento, p.marca, pr.precio_hospitalario, pr.precio_ambulatorio
             FROM Procedimientos p
             JOIN Precios pr ON p.id_procedimiento = pr.id_procedimiento
             WHERE pr.id_entidad = ?";
 
-    // Ajustar consulta según el tipo de procedimiento seleccionado
+
     if ($tipo_procedimiento === "contrastado") {
         $sql .= " AND p.es_contraste = 1";
     } elseif ($tipo_procedimiento === "sin_contraste") {
