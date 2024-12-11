@@ -130,61 +130,6 @@
             fill: #2B641E;
         }
 
-        .Btn {
-            width: 50px;
-            height: 50px;
-            border: 2px solid rgb(214, 214, 214);
-            border-radius: 15px;
-            background-color: rgb(255, 255, 255);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-            transition-duration: 0.3s;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.11);
-        }
-
-        .svgIcon {
-            fill: rgb(70, 70, 70);
-        }
-
-        .icon2 {
-            width: 18px;
-            height: 5px;
-            border-bottom: 2px solid rgb(70, 70, 70);
-            border-left: 2px solid rgb(70, 70, 70);
-            border-right: 2px solid rgb(70, 70, 70);
-        }
-
-        .Btn:hover {
-            background-color: rgb(51, 51, 51);
-            transition-duration: 0.3s;
-        }
-
-        .Btn:hover .icon2 {
-            border-bottom: 2px solid rgb(235, 235, 235);
-            border-left: 2px solid rgb(235, 235, 235);
-            border-right: 2px solid rgb(235, 235, 235);
-        }
-
-        .Btn:hover .svgIcon {
-            fill: rgb(255, 255, 255);
-            animation: slide-in-top 1s linear infinite;
-        }
-
-        @keyframes slide-in-top {
-            0% {
-                transform: translateY(-10px);
-                opacity: 0;
-            }
-
-            100% {
-                transform: translateY(0px);
-                opacity: 1;
-            }
-        }
     </style>
 </head>
 
@@ -216,7 +161,7 @@
 
     <h1>Consulta de Facturación</h1>
 
-    
+
     <div class="form-group">
         <select name="tipo_procedimiento" id="tipo_procedimiento" class="form-control">
             <option value="todos">Todos los Procedimientos</option>
@@ -262,18 +207,6 @@
         </select>
 
         <select name="year" id="year" class="form-control" style="width: 5%"></select>
-
-        <button class="Btn" style="margin-left: 30%">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="1em"
-                viewBox="0 0 384 512"
-                class="svgIcon">
-                <path
-                    d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"></path>
-            </svg>
-            <span class="icon2"></span>
-        </button>
     </div>
 
 
@@ -282,6 +215,17 @@
         <p><strong>Total Facturado Hospital:</strong> <span id="totalFacturado">0</span></p>
         <p><strong>Total Facturado RX:</strong> <span id="totalRx">0</span></p>
     </div>
+
+    <form action="exportar_excel.php" method="post">
+        <input type="hidden" name="tipo_procedimiento" value="" id="export_tipo_procedimiento">
+        <input type="hidden" name="mes_inicio" value="" id="export_mes_inicio">
+        <input type="hidden" name="mes_fin" value="" id="export_mes_fin">
+        <input type="hidden" name="tipo_entidad" value="" id="export_tipo_entidad">
+        <input type="hidden" name="year" value="" id="export_year">
+        <button type="submit" class="btn btn-outline-success"style="border-color:#4A936B  ">
+            Exportar a Excel
+        </button>
+    </form>
     <div class="load-file">
         <form action="procesar_excel.php" method="post" enctype="multipart/form-data">
             <input type="file" name="archivo_excel" accept=".xls, .xlsx" required="" id="file-input">
@@ -346,12 +290,11 @@
                 </tr>
             </thead>
             <tbody id="facturaBody">
-                <!-- Contenido generado de factura -->
             </tbody>
         </table>
     </div>
 
-    <!-- Incluir jQuery y DataTables JS -->
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
@@ -360,13 +303,12 @@
             const currentYear = new Date().getFullYear();
             const currentMonth = new Date().toISOString().slice(5, 7);
 
-            // Llenar selector de años
+
             for (let year = currentYear; year >= currentYear - 5; year--) {
                 $('#year').append(new Option(year, year));
             }
-            $('#year').val(currentYear); // Seleccionar el año actual por defecto
-            $('#mes').val(currentMonth); // Seleccionar el mes actual por defecto
-
+            $('#year').val(currentYear);
+            $('#mes').val(currentMonth);
             const table = $('#facturaTable').DataTable({
                 paging: true,
                 searching: true,
@@ -439,7 +381,26 @@
             url.searchParams.delete('msg');
             window.history.replaceState(null, '', url);
         }, 5000);
+        $(document).ready(function() {
+            // Llenar los valores del formulario de exportación con los filtros actuales
+            function sincronizarFiltrosExportacion() {
+                $('#export_tipo_procedimiento').val($('#tipo_procedimiento').val());
+                $('#export_mes_inicio').val($('#mes').val());
+                $('#export_mes_fin').val($('#mes_fin').val());
+                $('#export_tipo_entidad').val($('#tipo_entidad').val());
+                $('#export_year').val($('#year').val());
+            }
+
+            // Sincronizar cada vez que cambia un filtro
+            $('#tipo_procedimiento, #tipo_entidad, #mes, #mes_fin, #year').on('change', function() {
+                sincronizarFiltrosExportacion();
+            });
+
+            // Inicializar con valores actuales
+            sincronizarFiltrosExportacion();
+        });
     </script>
+
 
 </body>
 
