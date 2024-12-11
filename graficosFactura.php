@@ -133,12 +133,11 @@ $jsonDataEntities = json_encode($dataEntities);
     </div><br>
 
     <div class="Gráficos">
-        <!-- Gráfico 1: Procedimientos realizados -->
+     
         <div class="chart-container" style="width: 70%; margin-bottom: 50px; margin-left: 15%;">
             <canvas id="proceduresChart"></canvas>
         </div>
 
-        <!-- Gráfico 2: Facturación por tipo de entidad -->
         <div class="chart-container" style="width: 45%; margin-left: 25%;">
             <canvas id="entityTypeChart"></canvas>
         </div>

@@ -46,7 +46,7 @@ if (isset($_FILES['archivo_excel'])) {
                 $idEntidad = $rowEntidad['id_entidad'];
             }
 
-            // Buscar el id_procedimiento usando el código del procedimiento
+            
             $stmt = $conn->prepare("SELECT id_procedimiento FROM Procedimientos WHERE codigo_procedimiento = ?");
             $stmt->bind_param("s", $codigoProcedimiento);
             $stmt->execute();
@@ -56,7 +56,7 @@ if (isset($_FILES['archivo_excel'])) {
             if ($rowProcedimiento) {
                 $idProcedimiento = $rowProcedimiento['id_procedimiento'];
 
-                // Verificar si la factura ya existe con los criterios clave
+               
                 $stmt = $conn->prepare(
                     "SELECT 1 FROM Factura 
                     WHERE codigo_factura = ? AND id_procedimiento = ? AND id_entidad = ? 
@@ -67,10 +67,10 @@ if (isset($_FILES['archivo_excel'])) {
                 $result = $stmt->get_result();
 
                 if ($result->num_rows === 0) {
-                    // Calcular el valor con descuento
-                    $valorDescuento = $valorUnitario * (1 - ($descuento / 100));
+              
+                    $valorDescuento = $valorUnitario - ( $descuento * $valorUnitario);
 
-                    // Insertar en la tabla Factura
+                  
                     $stmt = $conn->prepare(
                         "INSERT INTO Factura 
                         (nombre_archivo, sexo, nombre_paciente, codigo_factura, id_procedimiento, id_entidad, id_paciente, fecha_nacimiento, cantidad, valor_unitario, valor_descuento, descuento, fecha_procedimiento) 
