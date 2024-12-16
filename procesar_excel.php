@@ -68,7 +68,7 @@ if (isset($_FILES['archivo_excel'])) {
 
                 if ($result->num_rows === 0) {
                     // Calcular el valor con descuento
-                    $valorDescuento = $valorUnitario * (1 - ($descuento / 100));
+                    $valorDescuento = $valorUnitario - ( $descuento * $valorUnitario );
 
                     // Insertar en la tabla Factura
                     $stmt = $conn->prepare(
