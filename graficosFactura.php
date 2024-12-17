@@ -107,7 +107,7 @@ $jsonDataEntities = json_encode($dataEntities);
             <option value="11">Noviembre</option>
             <option value="12">Diciembre</option>
         </select>
-        <select name="mes_fin" id="mes_fin" class="form-control" style="width: 6%">
+        <select name="mes_fin" id="mes_fin" class="form-control" style="width: 10%">
             <option value="">Mes Fin</option>
             <option value="01">Enero</option>
             <option value="02">Febrero</option>
@@ -123,7 +123,7 @@ $jsonDataEntities = json_encode($dataEntities);
             <option value="12">Diciembre</option>
         </select>
 
-        <select name="year" id="year" class="form-control" style="width: 5%"></select>
+        <select name="year" id="year" class="form-control" style="width: 7%"></select>
         <select id="chartType" class="form-control" style="width: 15%;">
             <option value="bar">Barra</option>
             <option value="line">Lineal</option>
