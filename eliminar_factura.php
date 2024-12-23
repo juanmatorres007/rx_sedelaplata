@@ -1,19 +1,19 @@
 <?php
 include "conexion.php";
 
-if (isset($_POST['codigo_factura'])) {
-    $codigo_factura = $_POST['codigo_factura'];
+if (isset($_POST['id_factura'])) {
+    $id_factura = $_POST['id_factura'];
 
-    $sql = "DELETE FROM Factura WHERE codigo_factura = ?";
+    $sql = "DELETE FROM Factura WHERE id_factura = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt) {
-        $stmt->bind_param("s", $codigo_factura);
+        $stmt->bind_param("s", $id_factura);
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) {
 
-            $msg = "La factura con código $codigo_factura fue eliminada correctamente.";
+            $msg = "La factura con código fue eliminada correctamente.";
             header("Location: factura.php?msg=" . urlencode($msg));
         } else {
 

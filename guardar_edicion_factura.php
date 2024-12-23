@@ -55,7 +55,7 @@ if (isset($_POST['id_factura'])) {
     $conn->close();
 
     // Redirigir a la página de listado
-    header("Location: listado_facturas.php");
+    header("Location: factura.php");
     exit();
 } else {
     echo "<div class='alert alert-danger'>Error: Datos incompletos</div>";

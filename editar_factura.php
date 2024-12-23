@@ -1,18 +1,18 @@
 <?php
 include "conexion.php";
 
-if (isset($_POST['codigo_factura'])) {
-    $codigo_factura = $_POST['codigo_factura'];
+if (isset($_POST['id_factura'])) {
+    $id_factura = $_POST['id_factura'];
 
     // Consulta para obtener los datos actuales de la factura
     $sql = "SELECT f.id_factura, f.codigo_factura, f.nombre_archivo, f.id_procedimiento, 
                    f.id_entidad, f.nombre_paciente, f.id_paciente, f.sexo, f.cantidad, 
                    f.valor_unitario, f.descuento, f.fecha_procedimiento 
             FROM Factura f
-            WHERE f.codigo_factura = ?";
+            WHERE f.id_factura = ?";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $codigo_factura);
+    $stmt->bind_param("i", $id_factura);
     $stmt->execute();
     $result = $stmt->get_result();
     $factura = $result->fetch_assoc();
@@ -132,7 +132,7 @@ if (isset($_POST['codigo_factura'])) {
                     </div>
 
                     <button type="submit" class="btn btn-success">Guardar Cambios</button>
-                    <a href="listado_facturas.php" class="btn btn-secondary">Cancelar</a>
+                    <a href="factura.php" class="btn btn-secondary">Cancelar</a>
                 </form>
             </div>
         </body>
