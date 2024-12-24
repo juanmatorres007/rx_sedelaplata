@@ -14,10 +14,10 @@ if (isset($_POST['id_factura'])) {
     $descuento = $_POST['descuento'] ?? 0;
     $fecha_procedimiento = $_POST['fecha_procedimiento'];
 
-    // Calcular el valor del descuento
+
     $valorDescuento = $valor_unitario - ($descuento * $valor_unitario);
 
-    // Consulta SQL para actualizar los datos
+   
     $sql = "UPDATE Factura SET 
                 codigo_factura = ?, 
                 id_procedimiento = ?, 
@@ -32,10 +32,10 @@ if (isset($_POST['id_factura'])) {
                 valor_descuento = ?
             WHERE id_factura = ?";
 
-    // Preparar la consulta
+ 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param(
-        "siisssiddsii", // 12 tipos de datos
+        "siisssiddsii", 
         $codigo_archivo,
         $id_procedimiento,
         $id_entidad,
@@ -50,7 +50,7 @@ if (isset($_POST['id_factura'])) {
         $id_factura
     );
 
-    // Ejecutar y verificar
+
     if ($stmt->execute()) {
         echo "<div class='alert alert-success'>Factura actualizada correctamente</div>";
     } else {
@@ -60,7 +60,6 @@ if (isset($_POST['id_factura'])) {
     $stmt->close();
     $conn->close();
 
-    // Redirigir a la página de listado
     header("Location: factura.php");
     exit();
 } else {

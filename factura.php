@@ -130,11 +130,12 @@
         .success__close path {
             fill: #2B641E;
         }
-
     </style>
 </head>
 
 <body>
+
+
     <?php if (isset($_GET['msg'])): ?>
         <div class="success" id="alerta">
             <div class="success__icon">
@@ -223,7 +224,7 @@
         <input type="hidden" name="mes_fin" value="" id="export_mes_fin">
         <input type="hidden" name="tipo_entidad" value="" id="export_tipo_entidad">
         <input type="hidden" name="year" value="" id="export_year">
-        <button type="submit" class="btn btn-outline-success"style="border-color:#4A936B  ">
+        <button type="submit" class="btn btn-outline-success" style="border-color:#4A936B  ">
             Exportar a Excel
         </button>
     </form>
@@ -400,6 +401,10 @@
             // Inicializar con valores actuales
             sincronizarFiltrosExportacion();
         });
+
+        function confirmDelete() {
+            return confirm('¿Estás seguro de que quieres eliminar esta factura?');
+        }
     </script>
 
 
