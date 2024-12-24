@@ -3,7 +3,7 @@ include "conexion.php";
 
 if (isset($_POST['id_factura'])) {
     $id_factura = $_POST['id_factura'];
-    $nombre_archivo = $_POST['nombre_archivo'];
+    $codigo_archivo = $_POST['codigo_factura'];
     $id_procedimiento = $_POST['id_procedimiento'];
     $id_entidad = $_POST['id_entidad'];
     $nombre_paciente = $_POST['nombre_paciente'];
@@ -16,7 +16,7 @@ if (isset($_POST['id_factura'])) {
 
     // Consulta SQL para actualizar los datos
     $sql = "UPDATE Factura SET 
-                nombre_archivo = ?, 
+                codigo_factura = ?, 
                 id_procedimiento = ?, 
                 id_entidad = ?, 
                 nombre_paciente = ?, 
@@ -30,17 +30,18 @@ if (isset($_POST['id_factura'])) {
 
     // Preparar la consulta
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("siisssiddsi", 
-        $nombre_archivo, 
-        $id_procedimiento, 
-        $id_entidad, 
-        $nombre_paciente, 
-        $id_paciente, 
-        $sexo, 
-        $cantidad, 
-        $valor_unitario, 
-        $descuento, 
-        $fecha_procedimiento, 
+    $stmt->bind_param(
+        "siisssiddsi",
+        $codigo_archivo,
+        $id_procedimiento,
+        $id_entidad,
+        $nombre_paciente,
+        $id_paciente,
+        $sexo,
+        $cantidad,
+        $valor_unitario,
+        $descuento,
+        $fecha_procedimiento,
         $id_factura
     );
 
@@ -60,4 +61,3 @@ if (isset($_POST['id_factura'])) {
 } else {
     echo "<div class='alert alert-danger'>Error: Datos incompletos</div>";
 }
-?>

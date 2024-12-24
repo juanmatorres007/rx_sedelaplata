@@ -45,7 +45,7 @@ if (isset($_POST['id_factura'])) {
                     <div style="display: flex;">
                         <div class="form-group">
                             <label for="nombre_archivo">codigo de factura</label>
-                            <input type="text" name="nombre_archivo" class="form-control" value="<?php echo htmlspecialchars($factura['codigo_factura']); ?>" required style="width: 100px">
+                            <input type="text" name="codigo_factura" class="form-control" value="<?php echo htmlspecialchars($factura['codigo_factura']); ?>" required style="width: 100px">
                         </div>
 
                         <!-- Procedimiento (Select) -->
