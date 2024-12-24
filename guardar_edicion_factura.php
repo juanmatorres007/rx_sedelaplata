@@ -14,6 +14,9 @@ if (isset($_POST['id_factura'])) {
     $descuento = $_POST['descuento'] ?? 0;
     $fecha_procedimiento = $_POST['fecha_procedimiento'];
 
+    // Calcular el valor del descuento
+    $valorDescuento = $valor_unitario - ($descuento * $valor_unitario);
+
     // Consulta SQL para actualizar los datos
     $sql = "UPDATE Factura SET 
                 codigo_factura = ?, 
@@ -25,13 +28,14 @@ if (isset($_POST['id_factura'])) {
                 cantidad = ?, 
                 valor_unitario = ?, 
                 descuento = ?, 
-                fecha_procedimiento = ?
+                fecha_procedimiento = ?, 
+                valor_descuento = ?
             WHERE id_factura = ?";
 
     // Preparar la consulta
     $stmt = $conn->prepare($sql);
     $stmt->bind_param(
-        "siisssiddsi",
+        "siisssiddsii", // 12 tipos de datos
         $codigo_archivo,
         $id_procedimiento,
         $id_entidad,
@@ -42,6 +46,7 @@ if (isset($_POST['id_factura'])) {
         $valor_unitario,
         $descuento,
         $fecha_procedimiento,
+        $valorDescuento,
         $id_factura
     );
 
