@@ -14,10 +14,8 @@ if (isset($_POST['id_factura'])) {
     $descuento = $_POST['descuento'] ?? 0;
     $fecha_procedimiento = $_POST['fecha_procedimiento'];
 
-
     $valorDescuento = $valor_unitario - ($descuento * $valor_unitario);
 
-   
     $sql = "UPDATE Factura SET 
                 codigo_factura = ?, 
                 id_procedimiento = ?, 
@@ -32,36 +30,40 @@ if (isset($_POST['id_factura'])) {
                 valor_descuento = ?
             WHERE id_factura = ?";
 
- 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param(
-        "siisssiddsii", 
-        $codigo_archivo,
-        $id_procedimiento,
-        $id_entidad,
-        $nombre_paciente,
-        $id_paciente,
-        $sexo,
-        $cantidad,
-        $valor_unitario,
-        $descuento,
-        $fecha_procedimiento,
-        $valorDescuento,
-        $id_factura
-    );
 
+    if ($stmt) {
+        $stmt->bind_param(
+            "siisssiddsii", 
+            $codigo_archivo,
+            $id_procedimiento,
+            $id_entidad,
+            $nombre_paciente,
+            $id_paciente,
+            $sexo,
+            $cantidad,
+            $valor_unitario,
+            $descuento,
+            $fecha_procedimiento,
+            $valorDescuento,
+            $id_factura
+        );
 
-    if ($stmt->execute()) {
-        echo "<div class='alert alert-success'>Factura actualizada correctamente</div>";
+        if ($stmt->execute()) {
+            $msg = "La factura con código $codigo_archivo fue actualizada correctamente.";
+            header("Location: factura.php?msg=" . urlencode($msg));
+        } else {
+            echo "<div class='alert alert-danger'>Error al actualizar la factura: " . $conn->error . "</div>";
+        }
+
+        $stmt->close();
     } else {
-        echo "<div class='alert alert-danger'>Error al actualizar la factura: " . $conn->error . "</div>";
+        echo "<div class='alert alert-danger'>Error al preparar la consulta SQL: " . $conn->error . "</div>";
     }
 
-    $stmt->close();
     $conn->close();
-
-    header("Location: factura.php");
     exit();
 } else {
     echo "<div class='alert alert-danger'>Error: Datos incompletos</div>";
 }
+?>
