@@ -40,6 +40,7 @@
     <div class="container">
         <h1>Filtrar Procedimientos y Precios por Entidad</h1>
 
+
         <!-- Selección de Tipo de Entidad -->
         <div class="form-group">
             <label for="tipo_entidad">Tipo de Entidad:</label>
