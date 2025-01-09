@@ -209,6 +209,21 @@
         </select>
 
         <select name="year" id="year" class="form-control" style="width: 5%"></select>
+        <a href="graficosFactura.php"><button class="btn-grafics  btn btn-info"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-clipboard2-data-fill" viewBox="0 0 16 16">
+                    <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5" />
+                    <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585q.084.236.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5q.001-.264.085-.5M10 7a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm4-3a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1" />
+                </svg> Graficos
+            </button></a>
+        <form action="exportar_excel.php" method="post">
+            <input type="hidden" name="tipo_procedimiento" value="" id="export_tipo_procedimiento">
+            <input type="hidden" name="mes_inicio" value="" id="export_mes_inicio">
+            <input type="hidden" name="mes_fin" value="" id="export_mes_fin">
+            <input type="hidden" name="tipo_entidad" value="" id="export_tipo_entidad">
+            <input type="hidden" name="year" value="" id="export_year">
+            <button type="submit" class="btn btn-outline-success" style="border-color:#4A936B  ">
+                Exportar a Excel
+            </button>
+        </form>
     </div>
 
 
@@ -218,16 +233,7 @@
         <p><strong>Total Facturado RX:</strong> <span id="totalRx">0</span></p>
     </div>
 
-    <form action="exportar_excel.php" method="post">
-        <input type="hidden" name="tipo_procedimiento" value="" id="export_tipo_procedimiento">
-        <input type="hidden" name="mes_inicio" value="" id="export_mes_inicio">
-        <input type="hidden" name="mes_fin" value="" id="export_mes_fin">
-        <input type="hidden" name="tipo_entidad" value="" id="export_tipo_entidad">
-        <input type="hidden" name="year" value="" id="export_year">
-        <button type="submit" class="btn btn-outline-success" style="border-color:#4A936B  ">
-            Exportar a Excel
-        </button>
-    </form>
+
     <div class="load-file">
         <form action="procesar_excel.php" method="post" enctype="multipart/form-data">
             <input type="file" name="archivo_excel" accept=".xls, .xlsx" required="" id="file-input">
@@ -261,11 +267,7 @@
                 Cargar factura
             </button>
         </form>
-        <a href="graficosFactura.php"><button class="btn-grafics  btn btn-info"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-clipboard2-data-fill" viewBox="0 0 16 16">
-                    <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5" />
-                    <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585q.084.236.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5q.001-.264.085-.5M10 7a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm4-3a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1" />
-                </svg> Graficos
-            </button></a>
+
     </div>
 
 
