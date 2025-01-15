@@ -11,6 +11,103 @@
     <link rel="icon" href="img/logorayos-removebg-preview.png">
 
     <style>
+        /* From Uiverse.io by mrhyddenn */
+        .icon-btn {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #cdcdcd;
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            position: relative;
+            transition: width 0.2s ease-in-out;
+            font-weight: 500;
+            font-family: inherit;
+        }
+
+        .add-btn:hover {
+            width: 120px;
+        }
+
+        .add-btn::before,
+        .add-btn::after {
+            transition: width 0.2s ease-in-out, border-radius 0.2s ease-in-out;
+            content: "";
+            position: absolute;
+            height: 4px;
+            width: 10px;
+            top: calc(50% - 2px);
+            background: seagreen;
+        }
+
+        .add-btn::after {
+            right: 14px;
+            overflow: hidden;
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
+        }
+
+        .add-btn::before {
+            left: 14px;
+            border-top-left-radius: 2px;
+            border-bottom-left-radius: 2px;
+        }
+
+        .icon-btn:focus {
+            outline: none;
+        }
+
+        .btn-txt {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .add-btn:hover::before,
+        .add-btn:hover::after {
+            width: 4px;
+            border-radius: 2px;
+        }
+
+        .add-btn:hover .btn-txt {
+            opacity: 1;
+        }
+
+        .add-icon::after,
+        .add-icon::before {
+            transition: all 0.2s ease-in-out;
+            content: "";
+            position: absolute;
+            height: 20px;
+            width: 2px;
+            top: calc(50% - 10px);
+            background: seagreen;
+            overflow: hidden;
+        }
+
+        .add-icon::before {
+            left: 22px;
+            border-top-left-radius: 2px;
+            border-bottom-left-radius: 2px;
+        }
+
+        .add-icon::after {
+            right: 22px;
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
+        }
+
+        .add-btn:hover .add-icon::before {
+            left: 15px;
+            height: 4px;
+            top: calc(50% - 2px);
+        }
+
+        .add-btn:hover .add-icon::after {
+            right: 15px;
+            height: 4px;
+            top: calc(50% - 2px);
+        }
+
         a button {
             width: 100%;
         }
@@ -268,6 +365,164 @@
             </button>
         </form>
 
+        <button class="icon-btn add-btn">
+            <div class="add-icon"></div>
+            <div class="btn-txt">Agregar</div>
+        </button>
+
+        <div>
+            <?php
+            include "conexion.php";
+
+            if (isset($_POST['id_factura'])) {
+                $id_factura = $_POST['id_factura'];
+
+                // Consulta para obtener los datos actuales de la factura
+                $sql = "SELECT f.id_factura, f.codigo_factura, f.nombre_archivo, f.id_procedimiento, 
+                   f.id_entidad, f.nombre_paciente, f.id_paciente, f.sexo, f.cantidad, 
+                   f.valor_unitario, f.descuento, f.fecha_procedimiento 
+            FROM Factura f
+            WHERE f.id_factura = ?";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $id_factura);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $factura = $result->fetch_assoc();
+
+                // Obtener opciones dinámicas de procedimientos y entidades
+                $procedimientos = $conn->query("SELECT id_procedimiento, nombre_procedimiento FROM Procedimientos");
+                $entidades = $conn->query("SELECT id_entidad, nombre_entidad FROM Entidades");
+
+                // Opciones para género
+                $generos = ["M" => "Masculino", "F" => "Femenino"];
+
+                if ($factura) {
+            ?>
+                    <!DOCTYPE html>
+                    <html lang="es">
+
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Editar Factura</title>
+                        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+                    </head>
+
+                    <body>
+                        <div class="container mt-4">
+                            <h2>Editar Factura</h2>
+                            <form action="guardar_edicion_factura.php" method="POST">
+                                <input type="hidden" name="id_factura" value="<?php echo $factura['id_factura']; ?>">
+
+                                <!-- Nombre del Archivo -->
+                                <div style="display: flex;">
+                                    <div class="form-group">
+                                        <label for="nombre_archivo">codigo de factura</label>
+                                        <input type="text" name="codigo_factura" class="form-control" value="<?php echo htmlspecialchars($factura['codigo_factura']); ?>" required style="width: 100px">
+                                    </div>
+
+                                    <!-- Procedimiento (Select) -->
+                                    <div class="form-group">
+                                        <label for="id_procedimiento">Procedimiento</label>
+                                        <select name="id_procedimiento" class="form-control" required style="width: 600px">
+                                            <?php while ($proc = $procedimientos->fetch_assoc()) { ?>
+                                                <option value="<?php echo $proc['id_procedimiento']; ?>"
+                                                    <?php echo ($factura['id_procedimiento'] == $proc['id_procedimiento']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($proc['nombre_procedimiento']); ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex;">
+                                    <div class="form-group">
+                                        <label for="id_entidad">Entidad</label>
+                                        <select name="id_entidad" class="form-control" required style="width: 200px; margin-right:5px">
+                                            <?php while ($entidad = $entidades->fetch_assoc()) { ?>
+                                                <option value="<?php echo $entidad['id_entidad']; ?>"
+                                                    <?php echo ($factura['id_entidad'] == $entidad['id_entidad']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($entidad['nombre_entidad']); ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+
+
+                                    <!-- Nombre del Paciente -->
+                                    <div class="form-group">
+                                        <label for="nombre_paciente">Nombre del Paciente</label>
+                                        <input type="text" name="nombre_paciente" class="form-control" value="<?php echo htmlspecialchars($factura['nombre_paciente']); ?>" required style="width: 520px">
+                                    </div>
+                                </div>
+                                <div style="display: flex;">
+                                    <div class="form-group">
+                                        <label for="id_paciente">Documento del Paciente</label>
+                                        <input type="text" name="id_paciente" class="form-control" value="<?php echo htmlspecialchars($factura['id_paciente']); ?>" required style="width: 200px;">
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="sexo">Género</label>
+                                        <select name="sexo" class="form-control" required style="width: 150px; margin-left:20px">
+                                            <?php foreach ($generos as $key => $value) { ?>
+                                                <option value="<?php echo $key; ?>"
+                                                    <?php echo ($factura['sexo'] == $key) ? 'selected' : ''; ?>>
+                                                    <?php echo $value; ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="cantidad">Cantidad</label>
+                                        <input type="number" name="cantidad" class="form-control" value="<?php echo $factura['cantidad']; ?>" required style="width: 100px; margin-left:20px">
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label for="valor_unitario">Valor Unitario</label>
+                                        <input type="number" step="0.01" name="valor_unitario" class="form-control" value="<?php echo $factura['valor_unitario']; ?>" required style="width: 150px ; margin-left:20px">
+                                    </div>
+                                </div>
+
+
+                                <div style="display: flex;">
+                                    <div class="form-group">
+                                        <label for="descuento">Descuento</label>
+                                        <input type="number" step="0.01" name="descuento" class="form-control" value="<?php echo $factura['descuento']; ?>" style="width: 100px ">
+                                    </div>
+
+
+
+
+                                    <div class="form-group">
+                                        <label for="fecha_procedimiento">Fecha del Procedimiento</label>
+                                        <input type="date" name="fecha_procedimiento" class="form-control" value="<?php echo $factura['fecha_procedimiento']; ?>" required style="width: 150px; margin-left:20px">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                                <a href="factura.php" class="btn btn-secondary">Cancelar</a>
+                            </form>
+                        </div>
+                    </body>
+
+                    </html>
+            <?php
+                } else {
+                    echo "<div class='alert alert-danger'>Factura no encontrada</div>";
+                }
+                $stmt->close();
+                $conn->close();
+            } else {
+                echo "<div class='alert alert-danger'>Código de factura no proporcionado</div>";
+            }
+            ?>
+
+        </div>
     </div>
 
 
