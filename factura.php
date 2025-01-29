@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="img/logorayos-removebg-preview.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery y Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
         /* From Uiverse.io by mrhyddenn */
@@ -365,239 +371,240 @@
             </button>
         </form>
 
-        <button  id="agregarfatura"  class="icon-btn add-btn">
+        <!-- Botón para abrir el modal -->
+        <button id="agregarfatura" class="icon-btn add-btn" data-toggle="modal" data-target="#agregarFacturaModal">
             <div class="add-icon"></div>
             <div class="btn-txt">Agregar</div>
         </button>
 
-        <div>
+    </div>
 
-            <body>
-                <div class="container mt-4">
-                    <h2>Agregar Factura</h2>
-                    <form action="agregar factura.php" method="POST">
-
-                        <div style="display: flex;">
-                            <div class="form-group">
-                                <label for="nombre_archivo">codigo de factura</label>
-                                <input type="text" name="codigo_factura" class="form-control" required style="width: 100px">
-
-                            </div>
-
-                            <div class="form-group">
-                                <label for="id_procedimiento">Procedimiento</label>
-                                <select name="id_procedimiento" class="form-control" required style="width: 600px">
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style="display: flex;">
-                            <div class="form-group">
-                                <label for="id_entidad">Entidad</label>
-                                <select name="id_entidad" class="form-control" required style="width: 200px; margin-right:5px">
-                                    
-                                </select>
-                            </div>
-
-
-
-                            <div class="form-group">
-                                <label for="nombre_paciente">Nombre del Paciente</label>
-                                <input type="text" name="nombre_paciente" class="form-control"  required style="width: 520px">
-                            </div>
-                        </div>
-                        <div style="display: flex;">
-                            <div class="form-group">
-                                <label for="id_paciente">Documento del Paciente</label>
-                                <input type="text" name="id_paciente" class="form-control"  required style="width: 200px;">
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="sexo">Género</label>
-                                <select name="sexo" class="form-control" required style="width: 150px; margin-left:20px">
-                                    
-                                </select>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="cantidad">Cantidad</label>
-                                <input type="number" name="cantidad" class="form-control"  required style="width: 100px; margin-left:20px">
-                            </div>
-
-
-
-                            <div class="form-group">
-                                <label for="valor_unitario">Valor Unitario</label>
-                                <input type="number" step="0.01" name="valor_unitario" class="form-control" required style="width: 150px ; margin-left:20px">
-                            </div>
-                        </div>
-
-
-                        <div style="display: flex;">
-                            <div class="form-group">
-                                <label for="descuento">Descuento</label>
-                                <input type="number" step="0.01" name="descuento" class="form-control" style="width: 100px ">
-                            </div>
-
-
-
-
-                            <div class="form-group">
-                                <label for="fecha_procedimiento">Fecha del Procedimiento</label>
-                                <input type="date" name="fecha_procedimiento" class="form-control" required style="width: 150px; margin-left:20px">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Guardar Cambios</button>
-                        <a href="factura.php" class="btn btn-secondary">Cancelar</a>
-                    </form>
+    <!-- Modal -->
+    <div class="modal fade" id="agregarFacturaModal" tabindex="-1" role="dialog" aria-labelledby="agregarFacturaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="agregarFacturaModalLabel">Agregar Factura</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </body>
+                <form action="agregar factura.php" method="POST">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="codigo_factura">Código de factura</label>
+                                    <input type="text" name="codigo_factura" class="form-control" required>
+                                </div>
 
-</html>
-</div>
-</div>
+                                <div class="form-group">
+                                    <label for="id_entidad">Entidad</label>
+                                    <select name="id_entidad" class="form-control" required>
+                                        <!-- Opciones aquí -->
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="id_paciente">Documento del Paciente</label>
+                                    <input type="text" name="id_paciente" class="form-control" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="valor_unitario">Valor Unitario</label>
+                                    <input type="number" step="0.01" name="valor_unitario" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_procedimiento">Procedimiento</label>
+                                    <select name="id_procedimiento" class="form-control" required>
+                                        <!-- Opciones aquí -->
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nombre_paciente">Nombre del Paciente</label>
+                                    <input type="text" name="nombre_paciente" class="form-control" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="sexo">Género</label>
+                                    <select name="sexo" class="form-control" required>
+                                        <!-- Opciones aquí -->
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cantidad">Cantidad</label>
+                                    <input type="number" name="cantidad" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="descuento">Descuento</label>
+                                    <input type="number" step="0.01" name="descuento" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="fecha_procedimiento">Fecha del Procedimiento</label>
+                                    <input type="date" name="fecha_procedimiento" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 
-<div class="table-container mt-4">
-    <table id="facturaTable" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th>Código Factura</th>
-                <th>Nombre Archivo</th>
-                <th>Código Procedimiento</th>
-                <th>Procedimiento</th>
-                <th>Marca</th>
-                <th>Entidad</th>
-                <th>Tipo Entidad</th>
-                <th>Nombre Paciente</th>
-                <th>ID Paciente</th>
-                <th>Sexo</th>
-                <th>Cantidad</th>
-                <th>Valor Unitario</th>
-                <th>Descuento</th>
-                <th>Valor con Descuento</th>
-                <th>Fecha del Procedimiento</th>
-                <th> </th>
-            </tr>
-        </thead>
-        <tbody id="facturaBody">
-        </tbody>
-    </table>
-</div>
+    <div class="table-container mt-4">
+        <table id="facturaTable" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Código Factura</th>
+                    <th>Nombre Archivo</th>
+                    <th>Código Procedimiento</th>
+                    <th>Procedimiento</th>
+                    <th>Marca</th>
+                    <th>Entidad</th>
+                    <th>Tipo Entidad</th>
+                    <th>Nombre Paciente</th>
+                    <th>ID Paciente</th>
+                    <th>Sexo</th>
+                    <th>Cantidad</th>
+                    <th>Valor Unitario</th>
+                    <th>Descuento</th>
+                    <th>Valor con Descuento</th>
+                    <th>Fecha del Procedimiento</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody id="facturaBody">
+            </tbody>
+        </table>
+    </div>
 
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
-<script>
-    $(document).ready(function() {
-        const currentYear = new Date().getFullYear();
-        const currentMonth = new Date().toISOString().slice(5, 7);
+    <script>
+        $(document).ready(function() {
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().toISOString().slice(5, 7);
 
 
-        for (let year = currentYear; year >= currentYear - 5; year--) {
-            $('#year').append(new Option(year, year));
-        }
-        $('#year').val(currentYear);
-        $('#mes').val(currentMonth);
-        const table = $('#facturaTable').DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-            info: true,
-            language: {
-                url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json",
-            },
-        });
-
-        function loadFacturaData(tipoProcedimiento, tipoEntidad, mesInicio, mesFin, year) {
-            $.ajax({
-                url: 'consultaFactura.php',
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    tipo_procedimiento: tipoProcedimiento,
-                    tipo_entidad: tipoEntidad,
-                    mes_inicio: mesInicio,
-                    mes_fin: mesFin,
-                    year: year,
-                },
-                success: function(response) {
-                    table.clear().draw();
-                    table.rows.add($(response.tableRows)).draw();
-
-                    $('#totalProcedimientos').text(response.totalProcedimientos);
-                    $('#totalFacturado').text(response.totalFacturado.toLocaleString('es-ES', {
-                        minimumFractionDigits: 3,
-                        maximumFractionDigits: 3,
-                    }));
-                    $('#totalRx').text(response.totalRx.toLocaleString('es-ES', {
-                        minimumFractionDigits: 3,
-                        maximumFractionDigits: 3,
-                    }));
+            for (let year = currentYear; year >= currentYear - 5; year--) {
+                $('#year').append(new Option(year, year));
+            }
+            $('#year').val(currentYear);
+            $('#mes').val(currentMonth);
+            const table = $('#facturaTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json",
                 },
             });
-        }
 
+            function loadFacturaData(tipoProcedimiento, tipoEntidad, mesInicio, mesFin, year) {
+                $.ajax({
+                    url: 'consultaFactura.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        tipo_procedimiento: tipoProcedimiento,
+                        tipo_entidad: tipoEntidad,
+                        mes_inicio: mesInicio,
+                        mes_fin: mesFin,
+                        year: year,
+                    },
+                    success: function(response) {
+                        table.clear().draw();
+                        table.rows.add($(response.tableRows)).draw();
 
-        loadFacturaData('todos', 'todos', currentMonth, '', currentYear);
-
-
-        $('#tipo_procedimiento, #tipo_entidad, #mes, #mes_fin, #year').on('change', function() {
-            const tipoProcedimiento = $('#tipo_procedimiento').val();
-            const tipoEntidad = $('#tipo_entidad').val();
-            const mesInicio = $('#mes').val();
-            const mesFin = $('#mes_fin').val();
-            const year = $('#year').val();
-
-            if (!mesFin) {
-                loadFacturaData(tipoProcedimiento, tipoEntidad, mesInicio, mesInicio, year);
-            } else {
-                loadFacturaData(tipoProcedimiento, tipoEntidad, mesInicio, mesFin, year);
+                        $('#totalProcedimientos').text(response.totalProcedimientos);
+                        $('#totalFacturado').text(response.totalFacturado.toLocaleString('es-ES', {
+                            minimumFractionDigits: 3,
+                            maximumFractionDigits: 3,
+                        }));
+                        $('#totalRx').text(response.totalRx.toLocaleString('es-ES', {
+                            minimumFractionDigits: 3,
+                            maximumFractionDigits: 3,
+                        }));
+                    },
+                });
             }
+
+
+            loadFacturaData('todos', 'todos', currentMonth, '', currentYear);
+
+
+            $('#tipo_procedimiento, #tipo_entidad, #mes, #mes_fin, #year').on('change', function() {
+                const tipoProcedimiento = $('#tipo_procedimiento').val();
+                const tipoEntidad = $('#tipo_entidad').val();
+                const mesInicio = $('#mes').val();
+                const mesFin = $('#mes_fin').val();
+                const year = $('#year').val();
+
+                if (!mesFin) {
+                    loadFacturaData(tipoProcedimiento, tipoEntidad, mesInicio, mesInicio, year);
+                } else {
+                    loadFacturaData(tipoProcedimiento, tipoEntidad, mesInicio, mesFin, year);
+                }
+            });
         });
-    });
 
-    // Oculta la alerta después de 5 segundos y limpia la URL
-    setTimeout(() => {
-        const alerta = document.getElementById('alerta');
-        if (alerta) {
-            alerta.style.transition = 'opacity 0.5s';
-            alerta.style.opacity = '0';
-            setTimeout(() => alerta.remove(), 500);
-        }
+        // Oculta la alerta después de 5 segundos y limpia la URL
+        setTimeout(() => {
+            const alerta = document.getElementById('alerta');
+            if (alerta) {
+                alerta.style.transition = 'opacity 0.5s';
+                alerta.style.opacity = '0';
+                setTimeout(() => alerta.remove(), 500);
+            }
 
 
-        const url = new URL(window.location);
-        url.searchParams.delete('msg');
-        window.history.replaceState(null, '', url);
-    }, 5000);
-    $(document).ready(function() {
-        // Llenar los valores del formulario de exportación con los filtros actuales
-        function sincronizarFiltrosExportacion() {
-            $('#export_tipo_procedimiento').val($('#tipo_procedimiento').val());
-            $('#export_mes_inicio').val($('#mes').val());
-            $('#export_mes_fin').val($('#mes_fin').val());
-            $('#export_tipo_entidad').val($('#tipo_entidad').val());
-            $('#export_year').val($('#year').val());
-        }
+            const url = new URL(window.location);
+            url.searchParams.delete('msg');
+            window.history.replaceState(null, '', url);
+        }, 5000);
+        $(document).ready(function() {
+            // Llenar los valores del formulario de exportación con los filtros actuales
+            function sincronizarFiltrosExportacion() {
+                $('#export_tipo_procedimiento').val($('#tipo_procedimiento').val());
+                $('#export_mes_inicio').val($('#mes').val());
+                $('#export_mes_fin').val($('#mes_fin').val());
+                $('#export_tipo_entidad').val($('#tipo_entidad').val());
+                $('#export_year').val($('#year').val());
+            }
 
-        // Sincronizar cada vez que cambia un filtro
-        $('#tipo_procedimiento, #tipo_entidad, #mes, #mes_fin, #year').on('change', function() {
+            // Sincronizar cada vez que cambia un filtro
+            $('#tipo_procedimiento, #tipo_entidad, #mes, #mes_fin, #year').on('change', function() {
+                sincronizarFiltrosExportacion();
+            });
+
+            // Inicializar con valores actuales
             sincronizarFiltrosExportacion();
         });
 
-        // Inicializar con valores actuales
-        sincronizarFiltrosExportacion();
-    });
-
-    function confirmDelete() {
-        return confirm('¿Estás seguro de que quieres eliminar esta factura?');
-    }
-</script>
+        function confirmDelete() {
+            return confirm('¿Estás seguro de que quieres eliminar esta factura?');
+        }
+    </script>
 
 
 </body>
