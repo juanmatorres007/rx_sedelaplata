@@ -1,0 +1,357 @@
+  /* From Uiverse.io by mrhyddenn */
+  .icon-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #cdcdcd;
+    background: white;
+    border-radius: 25px;
+    overflow: hidden;
+    position: relative;
+    transition: width 0.2s ease-in-out;
+    font-weight: 500;
+    font-family: inherit;
+}
+
+.add-btn:hover {
+    width: 120px;
+}
+
+.add-btn::before,
+.add-btn::after {
+    transition: width 0.2s ease-in-out, border-radius 0.2s ease-in-out;
+    content: "";
+    position: absolute;
+    height: 4px;
+    width: 10px;
+    top: calc(50% - 2px);
+    background: seagreen;
+}
+
+.add-btn::after {
+    right: 14px;
+    overflow: hidden;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.add-btn::before {
+    left: 14px;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+
+.icon-btn:focus {
+    outline: none;
+}
+
+.btn-txt {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.add-btn:hover::before,
+.add-btn:hover::after {
+    width: 4px;
+    border-radius: 2px;
+}
+
+.add-btn:hover .btn-txt {
+    opacity: 1;
+}
+
+.add-icon::after,
+.add-icon::before {
+    transition: all 0.2s ease-in-out;
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 2px;
+    top: calc(50% - 10px);
+    background: seagreen;
+    overflow: hidden;
+}
+
+.add-icon::before {
+    left: 22px;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+
+.add-icon::after {
+    right: 22px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.add-btn:hover .add-icon::before {
+    left: 15px;
+    height: 4px;
+    top: calc(50% - 2px);
+}
+
+.add-btn:hover .add-icon::after {
+    right: 15px;
+    height: 4px;
+    top: calc(50% - 2px);
+}
+
+a button {
+    width: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.form-control {
+    width: 15%;
+}
+
+.load-file {
+    display: flex;
+}
+
+#file-input {
+    width: 350px;
+    max-width: 100%;
+    color: #444;
+    padding: 2px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid rgba(8, 8, 8, 0.288);
+}
+
+#file-input::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: #307750;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+}
+
+#file-input::file-selector-button:hover {
+    background: #4A936B;
+}
+
+.container-btn-file {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    background-color: #307750;
+    color: #fff;
+    border-style: none;
+    padding: 1em 2em;
+    border-radius: 0.5em;
+    overflow: hidden;
+    box-shadow: 4px 8px 10px -3px rgba(0, 0, 0, 0.356);
+    transition: all 250ms;
+    margin-right: 30px;
+}
+
+
+.container-btn-file:hover {
+    background: #4A936B;
+}
+
+.success {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    width: 500px;
+    padding: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    background: #EDFBD8;
+    border-radius: 8px;
+    border: 1px solid #84D65A;
+    box-shadow: 0px 0px 5px -3px #111;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+}
+
+.success__icon {
+    width: 20px;
+    height: 20px;
+    transform: translateY(-2px);
+    margin-right: 8px;
+}
+
+.success__icon path {
+    fill: #84D65A;
+}
+
+.success__title {
+    font-weight: 500;
+    font-size: 14px;
+    color: #2B641E;
+}
+
+.success__close {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.success__close path {
+    fill: #2B641E;
+}
+/* Estilos generales para el modal */
+#agregarFacturaModal .modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+}
+
+/* Estilo para el encabezado del modal */
+#agregarFacturaModal .modal-header {
+    background: linear-gradient(145deg, #4A90E2, #357ABD);
+    color: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: none;
+    padding: 15px 20px;
+}
+
+#agregarFacturaModal .modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+#agregarFacturaModal .close {
+    color: white;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+#agregarFacturaModal .close:hover {
+    opacity: 1;
+}
+
+/* Estilo para el cuerpo del modal */
+#agregarFacturaModal .modal-body {
+    padding: 20px;
+}
+
+#agregarFacturaModal .form-group {
+    margin-bottom: 1.5rem;
+}
+
+#agregarFacturaModal .form-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+#agregarFacturaModal .form-control {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#agregarFacturaModal .form-control:focus {
+    border-color: #4A90E2;
+    box-shadow: 0 0 8px rgba(74, 144, 226, 0.5);
+    outline: none;
+}
+
+/* Estilo para los botones del modal */
+#agregarFacturaModal .modal-footer {
+    border-top: none;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+#agregarFacturaModal .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+#agregarFacturaModal .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+#agregarFacturaModal .btn-success {
+    background-color: #28a745;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+#agregarFacturaModal .btn-success:hover {
+    background-color: #218838;
+}
+
+/* Efecto de hover en los botones */
+#agregarFacturaModal .btn {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#agregarFacturaModal .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para los selects */
+#agregarFacturaModal .form-control.select {
+    appearance: none;
+    background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat right 10px center;
+    background-size: 16px;
+    padding-right: 30px;
+}
+
+/* Estilo para los inputs de tipo número */
+#agregarFacturaModal input[type="number"] {
+    appearance: textfield;
+}
+
+#agregarFacturaModal input[type="number"]::-webkit-inner-spin-button,
+#agregarFacturaModal input[type="number"]::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+}
+/* Estilos personalizados para los campos del modal */
+#agregarFacturaModal .form-control {
+    width: 100%; /* Asegura que todos los campos ocupen el 100% del ancho disponible */
+    margin-bottom: 1rem; /* Espaciado entre campos */
+}
+
+/* Ajustes específicos para campos más pequeños */
+#agregarFacturaModal input[type="number"],
+#agregarFacturaModal input[type="date"] {
+    max-width: 200px; /* Limita el ancho de campos como cantidad y fecha */
+}
+
+/* Ajustes para los selects */
+#agregarFacturaModal .form-control.select {
+    max-width: 100%; /* Asegura que los selects ocupen el ancho completo */
+}

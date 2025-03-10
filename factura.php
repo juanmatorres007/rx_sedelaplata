@@ -1,3 +1,5 @@
+<?php
+include 'conexion.php';?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -10,235 +12,15 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="img/logorayos-removebg-preview.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/facturacion.css">
 
     <!-- jQuery y Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <style>
-        /* From Uiverse.io by mrhyddenn */
-        .icon-btn {
-            width: 50px;
-            height: 50px;
-            border: 1px solid #cdcdcd;
-            background: white;
-            border-radius: 25px;
-            overflow: hidden;
-            position: relative;
-            transition: width 0.2s ease-in-out;
-            font-weight: 500;
-            font-family: inherit;
-        }
-
-        .add-btn:hover {
-            width: 120px;
-        }
-
-        .add-btn::before,
-        .add-btn::after {
-            transition: width 0.2s ease-in-out, border-radius 0.2s ease-in-out;
-            content: "";
-            position: absolute;
-            height: 4px;
-            width: 10px;
-            top: calc(50% - 2px);
-            background: seagreen;
-        }
-
-        .add-btn::after {
-            right: 14px;
-            overflow: hidden;
-            border-top-right-radius: 2px;
-            border-bottom-right-radius: 2px;
-        }
-
-        .add-btn::before {
-            left: 14px;
-            border-top-left-radius: 2px;
-            border-bottom-left-radius: 2px;
-        }
-
-        .icon-btn:focus {
-            outline: none;
-        }
-
-        .btn-txt {
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .add-btn:hover::before,
-        .add-btn:hover::after {
-            width: 4px;
-            border-radius: 2px;
-        }
-
-        .add-btn:hover .btn-txt {
-            opacity: 1;
-        }
-
-        .add-icon::after,
-        .add-icon::before {
-            transition: all 0.2s ease-in-out;
-            content: "";
-            position: absolute;
-            height: 20px;
-            width: 2px;
-            top: calc(50% - 10px);
-            background: seagreen;
-            overflow: hidden;
-        }
-
-        .add-icon::before {
-            left: 22px;
-            border-top-left-radius: 2px;
-            border-bottom-left-radius: 2px;
-        }
-
-        .add-icon::after {
-            right: 22px;
-            border-top-right-radius: 2px;
-            border-bottom-right-radius: 2px;
-        }
-
-        .add-btn:hover .add-icon::before {
-            left: 15px;
-            height: 4px;
-            top: calc(50% - 2px);
-        }
-
-        .add-btn:hover .add-icon::after {
-            right: 15px;
-            height: 4px;
-            top: calc(50% - 2px);
-        }
-
-        a button {
-            width: 100%;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .form-control {
-            width: 15%;
-        }
-
-        .load-file {
-            display: flex;
-        }
-
-        #file-input {
-            width: 350px;
-            max-width: 100%;
-            color: #444;
-            padding: 2px;
-            background: #fff;
-            border-radius: 10px;
-            border: 1px solid rgba(8, 8, 8, 0.288);
-        }
-
-        #file-input::file-selector-button {
-            margin-right: 20px;
-            border: none;
-            background: #307750;
-            padding: 10px 20px;
-            border-radius: 10px;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        #file-input::file-selector-button:hover {
-            background: #4A936B;
-        }
-
-        .container-btn-file {
-            position: relative;
-            justify-content: center;
-            align-items: center;
-            background-color: #307750;
-            color: #fff;
-            border-style: none;
-            padding: 1em 2em;
-            border-radius: 0.5em;
-            overflow: hidden;
-            box-shadow: 4px 8px 10px -3px rgba(0, 0, 0, 0.356);
-            transition: all 250ms;
-            margin-right: 30px;
-        }
-
-
-        .container-btn-file:hover {
-            background: #4A936B;
-        }
-
-        .success {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            width: 500px;
-            padding: 12px;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: start;
-            background: #EDFBD8;
-            border-radius: 8px;
-            border: 1px solid #84D65A;
-            box-shadow: 0px 0px 5px -3px #111;
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-        }
-
-        .success__icon {
-            width: 20px;
-            height: 20px;
-            transform: translateY(-2px);
-            margin-right: 8px;
-        }
-
-        .success__icon path {
-            fill: #84D65A;
-        }
-
-        .success__title {
-            font-weight: 500;
-            font-size: 14px;
-            color: #2B641E;
-        }
-
-        .success__close {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            margin-left: auto;
-        }
-
-        .success__close path {
-            fill: #2B641E;
-        }
-    </style>
 </head>
 
 <body>
-
-
     <?php if (isset($_GET['msg'])): ?>
         <div class="success" id="alerta">
             <div class="success__icon">
@@ -265,7 +47,6 @@
     </button>
 
     <h1>Consulta de Facturación</h1>
-
 
     <div class="form-group">
         <select name="tipo_procedimiento" id="tipo_procedimiento" class="form-control">
@@ -329,13 +110,11 @@
         </form>
     </div>
 
-
     <div class="summary-info mb-4">
         <p><strong>Número de Procedimientos:</strong> <span id="totalProcedimientos">0</span></p>
         <p><strong>Total Facturado Hospital:</strong> <span id="totalFacturado">0</span></p>
         <p><strong>Total Facturado RX:</strong> <span id="totalRx">0</span></p>
     </div>
-
 
     <div class="load-file">
         <form action="procesar_excel.php" method="post" enctype="multipart/form-data">
@@ -378,95 +157,125 @@
         </button>
 
     </div>
+    <?php
+$procedimientos = $conn->query("SELECT id_procedimiento, nombre_procedimiento FROM Procedimientos");
+$entidades = $conn->query("SELECT id_entidad, nombre_entidad FROM Entidades");
 
-    <!-- Modal -->
-    <div class="modal fade" id="agregarFacturaModal" tabindex="-1" role="dialog" aria-labelledby="agregarFacturaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="agregarFacturaModalLabel">Agregar Factura</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="agregar factura.php" method="POST">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="codigo_factura">Código de factura</label>
-                                    <input type="text" name="codigo_factura" class="form-control" required>
-                                </div>
+// Opciones para género
+$generos = ["M" => "Masculino", "F" => "Femenino"];
+?>
 
-                                <div class="form-group">
-                                    <label for="id_entidad">Entidad</label>
-                                    <select name="id_entidad" class="form-control" required>
-                                        <!-- Opciones aquí -->
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="id_paciente">Documento del Paciente</label>
-                                    <input type="text" name="id_paciente" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="valor_unitario">Valor Unitario</label>
-                                    <input type="number" step="0.01" name="valor_unitario" class="form-control" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="id_procedimiento">Procedimiento</label>
-                                    <select name="id_procedimiento" class="form-control" required>
-                                        <!-- Opciones aquí -->
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="nombre_paciente">Nombre del Paciente</label>
-                                    <input type="text" name="nombre_paciente" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="sexo">Género</label>
-                                    <select name="sexo" class="form-control" required>
-                                        <!-- Opciones aquí -->
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="cantidad">Cantidad</label>
-                                    <input type="number" name="cantidad" class="form-control" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="descuento">Descuento</label>
-                                    <input type="number" step="0.01" name="descuento" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="fecha_procedimiento">Fecha del Procedimiento</label>
-                                    <input type="date" name="fecha_procedimiento" class="form-control" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-success">Guardar Cambios</button>
-                    </div>
-                </form>
+<div class="modal fade" id="agregarFacturaModal" tabindex="-1" role="dialog" aria-labelledby="agregarFacturaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="agregarFacturaModalLabel">Agregar Factura</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
+            <form action="agregar_factura.php" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Columna izquierda -->
+                        <div class="col-md-6">
+                            <!-- Código de factura -->
+                            <div class="form-group">
+                                <label for="codigo_factura">Código de factura</label>
+                                <input type="text" name="codigo_factura" class="form-control" style="width: 100%;" required>
+                            </div>
+
+                            <!-- Entidad -->
+                            <div class="form-group">
+                                <label for="id_entidad">Entidad</label>
+                                <select name="id_entidad" class="form-control select" style="width: 100%;" required>
+                                    <option value="">Seleccione una entidad</option>
+                                    <?php while ($entidad = $entidades->fetch_assoc()): ?>
+                                        <option value="<?php echo $entidad['id_entidad']; ?>">
+                                            <?php echo htmlspecialchars($entidad['nombre_entidad']); ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <!-- Documento del Paciente -->
+                            <div class="form-group">
+                                <label for="id_paciente">Documento del Paciente</label>
+                                <input type="text" name="id_paciente" class="form-control" style="width: 100%;" required>
+                            </div>
+
+                            <!-- Valor Unitario -->
+                            <div class="form-group">
+                                <label for="valor_unitario">Valor Unitario</label>
+                                <input type="number" step="0.01" name="valor_unitario" class="form-control" style="width: 100%;" required>
+                            </div>
+                        </div>
+
+                        <!-- Columna derecha -->
+                        <div class="col-md-6">
+                            <!-- Procedimiento -->
+                            <div class="form-group">
+                                <label for="id_procedimiento">Procedimiento</label>
+                                <select name="id_procedimiento" class="form-control select" style="width: 100%;" required>
+                                    <option value="">Seleccione un procedimiento</option>
+                                    <?php while ($procedimiento = $procedimientos->fetch_assoc()): ?>
+                                        <option value="<?php echo $procedimiento['id_procedimiento']; ?>">
+                                            <?php echo htmlspecialchars($procedimiento['nombre_procedimiento']); ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <!-- Nombre del Paciente -->
+                            <div class="form-group">
+                                <label for="nombre_paciente">Nombre del Paciente</label>
+                                <input type="text" name="nombre_paciente" class="form-control" style="width: 100%;" required>
+                            </div>
+
+                            <!-- Género -->
+                            <div class="form-group">
+                                <label for="sexo">Género</label>
+                                <select name="sexo" class="form-control select" style="width: 100%;" required>
+                                    <option value="">Seleccione el género</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+
+                            <!-- Cantidad -->
+                            <div class="form-group">
+                                <label for="cantidad">Cantidad</label>
+                                <input type="number" name="cantidad" class="form-control" style="width: 100%;" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fila inferior -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Descuento -->
+                            <div class="form-group">
+                                <label for="descuento">Descuento (%)</label>
+                                <input type="number" step="0.01" name="descuento" class="form-control" style="width: 100%;" value="0.15">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Fecha del Procedimiento -->
+                            <div class="form-group">
+                                <label for="fecha_procedimiento">Fecha del Procedimiento</label>
+                                <input type="date" name="fecha_procedimiento" class="form-control" style="width: 100%;" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                </div>
+            </form>
         </div>
     </div>
-
+</div>
 
     <div class="table-container mt-4">
         <table id="facturaTable" class="display" style="width:100%">
@@ -495,7 +304,6 @@
         </table>
     </div>
 
-
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
@@ -503,7 +311,6 @@
         $(document).ready(function() {
             const currentYear = new Date().getFullYear();
             const currentMonth = new Date().toISOString().slice(5, 7);
-
 
             for (let year = currentYear; year >= currentYear - 5; year--) {
                 $('#year').append(new Option(year, year));
@@ -546,12 +353,13 @@
                             maximumFractionDigits: 3,
                         }));
                     },
+                    error: function(xhr, status, error) {
+                        console.error("Error en la solicitud AJAX: ", status, error);
+                    }
                 });
             }
 
-
             loadFacturaData('todos', 'todos', currentMonth, '', currentYear);
-
 
             $('#tipo_procedimiento, #tipo_entidad, #mes, #mes_fin, #year').on('change', function() {
                 const tipoProcedimiento = $('#tipo_procedimiento').val();
@@ -577,11 +385,11 @@
                 setTimeout(() => alerta.remove(), 500);
             }
 
-
             const url = new URL(window.location);
             url.searchParams.delete('msg');
             window.history.replaceState(null, '', url);
         }, 5000);
+
         $(document).ready(function() {
             // Llenar los valores del formulario de exportación con los filtros actuales
             function sincronizarFiltrosExportacion() {
@@ -605,8 +413,6 @@
             return confirm('¿Estás seguro de que quieres eliminar esta factura?');
         }
     </script>
-
-
 </body>
 
 </html>
