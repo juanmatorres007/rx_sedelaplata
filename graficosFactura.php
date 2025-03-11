@@ -33,6 +33,22 @@ while ($row = $resultEntities->fetch_assoc()) {
     $dataEntities[] = $row;
 }
 $jsonDataEntities = json_encode($dataEntities);
+
+// Consulta 3: Facturación mensual
+$queryFacturacion = "SELECT DATE_FORMAT(fecha_procedimiento, '%Y-%m') AS mes, SUM(valor_descuento) AS total FROM factura GROUP BY mes ORDER BY mes";
+$resultFacturacion = $conn->query($queryFacturacion);
+$dataFacturacion = [];
+while ($row = $resultFacturacion->fetch_assoc()) {
+    $dataFacturacion[] = $row;
+}
+
+$meses = [];
+$totales = [];
+
+foreach ($dataFacturacion as $row) {
+    $meses[] = $row['mes'];
+    $totales[] = $row['total'];
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -129,11 +145,11 @@ $jsonDataEntities = json_encode($dataEntities);
             <option value="line">Lineal</option>
             <option value="doughnut">Circular</option>
         </select>
-        
+
     </div><br>
 
     <div class="Gráficos">
-     
+
         <div class="chart-container" style="width: 70%; margin-bottom: 50px; margin-left: 15%;">
             <canvas id="proceduresChart"></canvas>
         </div>
@@ -141,132 +157,170 @@ $jsonDataEntities = json_encode($dataEntities);
         <div class="chart-container" style="width: 45%; margin-left: 25%;">
             <canvas id="entityTypeChart"></canvas>
         </div>
+        <div class="chart-container" style="width: 45%; margin-left: 25%;">
+        <canvas id="facturacionChart"></canvas>
+        </div>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-    const ctxProcedures = document.getElementById('proceduresChart').getContext('2d');
-    const ctxEntities = document.getElementById('entityTypeChart').getContext('2d');
-    let proceduresChart, entitiesChart;
-    
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctxProcedures = document.getElementById('proceduresChart').getContext('2d');
+            const ctxEntities = document.getElementById('entityTypeChart').getContext('2d');
+            let proceduresChart, entitiesChart;
 
-    // Función para crear gráficos
-    const createChart = (ctx, type, labels, values, title, colors = []) => {
-        if (ctx.chart) {
-            ctx.chart.destroy();
-        }
-        ctx.chart = new Chart(ctx, {
-            type: type,
+
+            // Función para crear gráficos
+            const createChart = (ctx, type, labels, values, title, colors = []) => {
+                if (ctx.chart) {
+                    ctx.chart.destroy();
+                }
+                ctx.chart = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: title,
+                            data: values,
+                            backgroundColor: colors.length ? colors : 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
+                            },
+                            title: {
+                                display: true,
+                                text: title
+                            }
+                        }
+                    }
+                });
+            };
+
+            // Genera colores únicos
+            const createUniqueColors = (count) => {
+                const colors = new Set();
+                while (colors.size < count) {
+                    const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+                    colors.add(color);
+                }
+                return Array.from(colors);
+            };
+
+            //  actualizar el gráfico de 
+            const updateProceduresChart = () => {
+                const filters = getFilters();
+                const chartType = document.getElementById('chartType').value;
+                fetch(`getProceduresData.php?mes=${filters.mes}&mes_fin=${filters.mes_fin}&year=${filters.year}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        const labels = data.map(item => item.nombre_procedimiento);
+                        const values = data.map(item => item.total);
+                        createChart(ctxProcedures, chartType, labels, values, 'Procedimientos Realizados');
+                    })
+                    .catch(error => console.error('Error:', error));
+            };
+
+            // actualizar el gráfico de entidades
+            const updateEntitiesChart = () => {
+                const filters = getFilters();
+                fetch(`getEntitiesData.php?mes=${filters.mes}&mes_fin=${filters.mes_fin}&year=${filters.year}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        const labels = data.map(item => item.tipo_entidad);
+                        const values = data.map(item => item.total_facturado);
+                        const colors = createUniqueColors(labels.length);
+                        createChart(ctxEntities, 'pie', labels, values, 'Facturación por Tipo de Entidad', colors);
+                    })
+                    .catch(error => console.error('Error:', error));
+            };
+
+            //valores de los filtros
+            const getFilters = () => ({
+                mes: document.getElementById('mes').value,
+                mes_fin: document.getElementById('mes_fin').value || document.getElementById('mes').value,
+                year: document.getElementById('year').value
+            });
+
+            const generateYears = () => {
+                const yearSelect = document.getElementById('year');
+                const currentYear = new Date().getFullYear();
+                for (let year = currentYear; year >= 2020; year--) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    yearSelect.appendChild(option);
+                }
+                yearSelect.value = currentYear;
+            };
+
+            const initializeFilters = () => {
+                const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+                document.getElementById('mes').value = currentMonth;
+                document.getElementById('mes_fin').value = '';
+            };
+
+            const addFilterEvents = () => {
+
+                ['mes', 'mes_fin', 'year'].forEach(filterId => {
+                    document.getElementById(filterId).addEventListener('change', () => {
+                        updateProceduresChart();
+                        updateEntitiesChart();
+                    });
+                });
+
+                document.getElementById('chartType').addEventListener('change', updateProceduresChart);
+            };
+
+            generateYears();
+            initializeFilters();
+            addFilterEvents();
+            updateProceduresChart();
+            updateEntitiesChart();
+        });
+
+        
+   
+        const ctx = document.getElementById('facturacionChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
             data: {
-                labels: labels,
+                labels: <?php echo json_encode($meses); ?>,
                 datasets: [{
-                    label: title,
-                    data: values,
-                    backgroundColor: colors.length ? colors : 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
+                    label: 'Facturación mensual',
+                    data: <?php echo json_encode($totales); ?>,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    fill: true
                 }]
             },
             options: {
-                  indexAxis: 'y',
                 responsive: true,
                 plugins: {
-                    legend: { display: true },
-                    title: { display: true, text: title }
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
         });
-    };
-
-    // Genera colores únicos
-    const createUniqueColors = (count) => {
-        const colors = new Set();
-        while (colors.size < count) {
-            const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
-            colors.add(color);
-        }
-        return Array.from(colors);
-    };
-
-    //  actualizar el gráfico de 
-    const updateProceduresChart = () => {
-        const filters = getFilters();
-        const chartType = document.getElementById('chartType').value;
-        fetch(`getProceduresData.php?mes=${filters.mes}&mes_fin=${filters.mes_fin}&year=${filters.year}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-                const labels = data.map(item => item.nombre_procedimiento);
-                const values = data.map(item => item.total);
-                createChart(ctxProcedures, chartType, labels, values, 'Procedimientos Realizados');
-            })
-            .catch(error => console.error('Error:', error));
-    };
-
-    // actualizar el gráfico de entidades
-    const updateEntitiesChart = () => {
-        const filters = getFilters();
-        fetch(`getEntitiesData.php?mes=${filters.mes}&mes_fin=${filters.mes_fin}&year=${filters.year}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-                const labels = data.map(item => item.tipo_entidad);
-                const values = data.map(item => item.total_facturado);
-                const colors = createUniqueColors(labels.length);
-                createChart(ctxEntities, 'pie', labels, values, 'Facturación por Tipo de Entidad', colors);
-            })
-            .catch(error => console.error('Error:', error));
-    };
-
-    //valores de los filtros
-    const getFilters = () => ({
-        mes: document.getElementById('mes').value,
-        mes_fin: document.getElementById('mes_fin').value || document.getElementById('mes').value,
-        year: document.getElementById('year').value
-    });
-
-    const generateYears = () => {
-        const yearSelect = document.getElementById('year');
-        const currentYear = new Date().getFullYear();
-        for (let year = currentYear; year >= 2020; year--) {
-            const option = document.createElement('option');
-            option.value = year;
-            option.textContent = year;
-            yearSelect.appendChild(option);
-        }
-        yearSelect.value = currentYear;
-    };
-
-    const initializeFilters = () => {
-        const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
-        document.getElementById('mes').value = currentMonth;
-        document.getElementById('mes_fin').value = '';
-    };
-
-    const addFilterEvents = () => {
-  
-        ['mes', 'mes_fin', 'year'].forEach(filterId => {
-            document.getElementById(filterId).addEventListener('change', () => {
-                updateProceduresChart();
-                updateEntitiesChart();
-            });
-        });
-
-        document.getElementById('chartType').addEventListener('change', updateProceduresChart);
-    };
-
-    generateYears();
-    initializeFilters();
-    addFilterEvents();
-    updateProceduresChart();
-    updateEntitiesChart();
-});
-
     </script>
 </body>
 
