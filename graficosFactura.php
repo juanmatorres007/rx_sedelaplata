@@ -2,13 +2,15 @@
 // Conexión a la base de datos
 include 'conexion.php';
 
+// Obtener el año actual
+$currentYear = date('Y');
+
 // Consulta 1: Procedimientos realizados
 $queryProcedures = "
     SELECT p.nombre_procedimiento, COUNT(f.id_factura) AS total 
     FROM Factura f
     INNER JOIN Procedimientos p ON f.id_procedimiento = p.id_procedimiento
-    WHERE MONTH(f.fecha_procedimiento) = MONTH(CURRENT_DATE())
-    AND YEAR(f.fecha_procedimiento) = YEAR(CURRENT_DATE())
+    WHERE YEAR(f.fecha_procedimiento) = $currentYear
     GROUP BY p.nombre_procedimiento
 ";
 $resultProcedures = $conn->query($queryProcedures);
@@ -23,8 +25,7 @@ $queryEntities = "
     SELECT e.tipo_entidad, SUM(f.valor_unitario) AS total_facturado, SUM(f.cantidad) AS total_cant
     FROM Factura f
     INNER JOIN Entidades e ON f.id_entidad = e.id_entidad
-    WHERE MONTH(f.fecha_procedimiento) = MONTH(CURRENT_DATE())
-    AND YEAR(f.fecha_procedimiento) = YEAR(CURRENT_DATE())
+    WHERE YEAR(f.fecha_procedimiento) = $currentYear
     GROUP BY e.tipo_entidad
 ";
 $resultEntities = $conn->query($queryEntities);
@@ -34,8 +35,14 @@ while ($row = $resultEntities->fetch_assoc()) {
 }
 $jsonDataEntities = json_encode($dataEntities);
 
-// Consulta 3: Facturación mensual
-$queryFacturacion = "SELECT DATE_FORMAT(fecha_procedimiento, '%Y-%m') AS mes, SUM(valor_descuento) AS total FROM factura GROUP BY mes ORDER BY mes";
+// Consulta 3: Facturación mensual (solo para el año actual)
+$queryFacturacion = "
+    SELECT DATE_FORMAT(fecha_procedimiento, '%Y-%m') AS mes, SUM(valor_descuento) AS total 
+    FROM Factura 
+    WHERE YEAR(fecha_procedimiento) = $currentYear
+    GROUP BY mes 
+    ORDER BY mes
+";
 $resultFacturacion = $conn->query($queryFacturacion);
 $dataFacturacion = [];
 while ($row = $resultFacturacion->fetch_assoc()) {
